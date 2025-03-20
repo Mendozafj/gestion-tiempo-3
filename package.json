@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www"
+    "dev": "nodemon ./bin/www",
+    "migrate": "node migrations/run-migrations.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
