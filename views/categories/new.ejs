@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear Nueva Categoría</title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+  <div class="container">
+    <h1>Crear Nueva Categoría</h1>
+    <form action="/categories" method="POST">
+      <label for="name">Nombre:</label>
+      <input type="text" id="name" name="name" required>
+      <label for="description">Descripción:</label>
+      <textarea id="description" name="description"></textarea>
+      <button type="submit">Crear Categoría</button>
+    </form>
+    <br>
+    <a href="/categories" class="button">Volver a la lista de categorías</a>
+  </div>
+</body>
+</html>
