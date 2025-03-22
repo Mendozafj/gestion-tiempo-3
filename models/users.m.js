@@ -1,10 +1,12 @@
 const pool = require('../config/db');
+const bcrypt = require('bcrypt');
 
 class UsersModel {
-  // Método para registrar un nuevo usuario
+  // Método para registrar un nuevo usuario con contraseña cifrada
   async register(user) {
-    const query = 'INSERT INTO users (username, name, password) VALUES (?, ?, ?)';
-    const values = [user.username, user.name, user.password];
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+    const query = 'INSERT INTO users (username, name, password, role) VALUES (?, ?, ?, ?)';
+    const values = [user.username, user.name, hashedPassword, user.role || 'user'];
 
     try {
       const [result] = await pool.query(query, values);
@@ -12,6 +14,16 @@ class UsersModel {
     } catch (error) {
       throw error;
     }
+  }
+
+  // Método para verificar la contraseña
+  async verifyPassword(username, password) {
+    const user = await this.showByUsername(username);
+    if (!user) {
+      throw new Error('Usuario no encontrado');
+    }
+    const isValid = await bcrypt.compare(password, user.password);
+    return isValid ? user : null;
   }
 
   // Método para mostrar todos los usuarios
@@ -64,8 +76,9 @@ class UsersModel {
 
   // Método para editar un usuario por su ID
   async edit(updatedUser, id) {
-    const query = 'UPDATE users SET username = ?, name = ?, password = ? WHERE id = ?';
-    const values = [updatedUser.username, updatedUser.name, updatedUser.password, id];
+    const hashedPassword = await bcrypt.hash(updatedUser.password, 10);
+    const query = 'UPDATE users SET username = ?, name = ?, password = ?, role = ? WHERE id = ?';
+    const values = [updatedUser.username, updatedUser.name, hashedPassword, updatedUser.role || 'user', id];
 
     try {
       const [result] = await pool.query(query, values);

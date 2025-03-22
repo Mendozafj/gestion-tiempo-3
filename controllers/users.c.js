@@ -4,7 +4,7 @@ const habitsModel = require("../models/habits.m");
 
 class UsersController {
   async register(data) {
-    const { name, username, password } = data;
+    const { name, username, password, role= "user" } = data;
     if (!name || !username || !password) {
       return { error: "Todos los campos son requeridos." };
     }
@@ -15,7 +15,7 @@ class UsersController {
         return { error: "El nombre de usuario ya está en uso." };
       }
 
-      const newUser = { name, username, password };
+      const newUser = { name, username, password, role };
       await usersModel.register(newUser);
 
       return { success: true };
@@ -55,7 +55,7 @@ class UsersController {
   }
 
   async update(id, data) {
-    const { name, username, password, email } = data;
+    const { name, username, password, role = "user" } = data;
 
     try {
       const user = await usersModel.showByID(id);
@@ -73,7 +73,8 @@ class UsersController {
       const updatedUser = {
         name: name || user.name,
         username: username || user.username,
-        password: password || user.password
+        password: password || user.password,
+        role: role || user.role
       };
 
       await usersModel.edit(updatedUser, id);
