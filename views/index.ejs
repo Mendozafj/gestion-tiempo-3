@@ -1,15 +1,33 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title %></title>
+  <title>
+    <%= title %>
+  </title>
   <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
+
 <body>
+  <header>
+    <h1>Gestión del Tiempo</h1>
+    <nav>
+      <a href="/">Inicio</a>
+      <% if (user) { %>
+        <a href="/auth/logout">Cerrar sesión</a> <!-- Mostrar solo si el usuario está autenticado -->
+      <% } else { %>
+        <a href="/auth/login">Iniciar sesión</a> <!-- Mostrar solo si el usuario no está autenticado -->
+        <a href="/auth/register">Registrarse</a> <!-- Mostrar solo si el usuario no está autenticado -->
+      <% } %>
+    </nav>
+  </header>
+
   <div class="container">
     <!-- Título principal -->
-    <h1>Bienvenido a <%= title %></h1>
+    <h1>Bienvenido a <%= title %>
+    </h1>
     <p class="subtitle">Tu aplicación para gestionar tu tiempo.</p>
 
     <!-- Descripción breve -->
@@ -22,14 +40,27 @@
 
     <!-- Botones de navegación -->
     <div class="actions">
-      <a href="/activities" class="button">Ver Actividades</a>
-      <a href="/categories" class="button">Ver Categorías</a>
+      <% if (user) { %>
+        <!-- Opciones para usuarios autenticados -->
+        <a href="/dashboard" class="button">Ir al Dashboard</a>
+      <% } else { %>
+        <!-- Opciones para usuarios no autenticados -->
+        <a href="/auth/login" class="button">Iniciar Sesión</a>
+        <a href="/auth/register" class="button">Registrarse</a>
+      <% } %>
     </div>
 
     <!-- Mensaje adicional -->
     <div class="message info">
-      <p>Selecciona una opción para comenzar.</p>
+      <p>
+        <% if (user) { %>
+          ¡Bienvenido de nuevo, <%= user.username %>! Haz clic en "Ir al Dashboard" para comenzar.
+        <% } else { %>
+          Selecciona una opción para comenzar.
+        <% } %>
+      </p>
     </div>
   </div>
 </body>
+
 </html>

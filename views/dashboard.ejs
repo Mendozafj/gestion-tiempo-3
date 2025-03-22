@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Gestión del Tiempo</title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+  <header>
+    <h1>Gestión del Tiempo</h1>
+    <nav>
+      <a href="/">Inicio</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/auth/logout">Cerrar sesión</a> <!-- Mostrar solo si el usuario está autenticado -->
+    </nav>
+  </header>
+
+  <div class="container">
+    <!-- Título principal -->
+    <h1>Dashboard</h1>
+    <p class="subtitle">Bienvenido, <%= user.username %>. Aquí puedes gestionar tus actividades y categorías.</p>
+
+    <!-- Botones de navegación -->
+    <div class="actions">
+      <a href="/activities" class="button">Ver Actividades</a>
+      <a href="/categories" class="button">Ver Categorías</a>
+    </div>
+
+    <!-- Mensaje adicional -->
+    <div class="message info">
+      <p>Selecciona una opción para comenzar.</p>
+    </div>
+  </div>
+</body>
+
+</html>
