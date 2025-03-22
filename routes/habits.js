@@ -7,11 +7,26 @@ router.post('/', async (req, res) => {
   try {
     const result = await habitsController.register(req.body);
     if (result.error) {
-      return res.status(400).send(result.error);
+      return res.status(400).render('message', {
+        message: 'Error',
+        messageType: 'error',
+        details: result.error,
+        redirectUrl: '/habits'
+      });
     }
-    return res.status(201).send("Hábito creado");
+    res.status(201).render('message', {
+      message: 'Hábito creado',
+      messageType: 'success',
+      details: `El hábito "${req.body.name}" ha sido creado exitosamente.`,
+      redirectUrl: '/habits'
+    });
   } catch (error) {
-    res.status(500).send("Error al registrar el hábito");
+    res.status(500).render('message', {
+      message: 'Error',
+      messageType: 'error',
+      details: `No se pudo crear el hábito: ${error.message}`,
+      redirectUrl: '/habits'
+    });
   }
 });
 
@@ -19,9 +34,27 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const habits = await habitsController.show();
-    res.status(200).render('habits', { habits });  // Renderiza la vista 'habits.ejs'
+    res.status(200).render('habits/habits', { habits });  // Renderiza la vista 'habits.ejs'
   } catch (err) {
     res.status(500).send(`Error al listar hábitos: ${err}`);
+  }
+});
+
+// Mostrar formulario para crear un nuevo hábito
+router.get('/new', (req, res) => {
+  res.render('habits/new');
+});
+
+// Mostrar formulario para editar un hábito
+router.get('/:id/edit', async (req, res) => {
+  try {
+    const habit = await habitsController.showByID(req.params.id);
+    if (!habit) {
+      return res.status(404).send("Hábito no encontrado");
+    }
+    res.render('habits/edit', { habit });
+  } catch (err) {
+    res.status(500).send(`Error al obtener el hábito: ${err}`);
   }
 });
 
@@ -53,11 +86,26 @@ router.put('/:id', async (req, res) => {
   try {
     const result = await habitsController.update(req.params.id, req.body);
     if (result.error) {
-      return res.status(400).send(result.error);
+      return res.status(400).render('message', {
+        message: 'Error',
+        messageType: 'error',
+        details: result.error,
+        redirectUrl: '/habits'
+      });
     }
-    res.status(200).send("Hábito editado");
-  } catch (err) {
-    res.status(500).send(`Error al editar el hábito: ${err}`);
+    res.status(200).render('message', {
+      message: 'Hábito editado',
+      messageType: 'success',
+      details: `El hábito "${req.body.name}" ha sido actualizado exitosamente.`,
+      redirectUrl: '/habits'
+    });
+  } catch (error) {
+    res.status(500).render('message', {
+      message: 'Error',
+      messageType: 'error',
+      details: `No se pudo editar el hábito: ${error.message}`,
+      redirectUrl: '/habits'
+    });
   }
 });
 
@@ -66,11 +114,26 @@ router.delete('/:id', async (req, res) => {
   try {
     const result = await habitsController.delete(req.params.id);
     if (result.error) {
-      return res.status(400).send(result.error);
+      return res.status(400).render('message', {
+        message: 'Error',
+        messageType: 'error',
+        details: result.error,
+        redirectUrl: '/habits'
+      });
     }
-    res.status(200).send("Hábito eliminado")
-  } catch (err) {
-    res.status(500).send(`Error al eliminar hábito: ${err}`);
+    res.status(200).render('message', {
+      message: 'Hábito eliminado',
+      messageType: 'success',
+      details: `El hábito ha sido eliminado exitosamente.`,
+      redirectUrl: '/habits'
+    });
+  } catch (error) {
+    res.status(500).render('message', {
+      message: 'Error',
+      messageType: 'error',
+      details: `No se pudo eliminar el hábito: ${error.message}`,
+      redirectUrl: '/habits'
+    });
   }
 });
 
