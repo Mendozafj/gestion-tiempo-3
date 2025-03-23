@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var activitiesController = require("../controllers/activities.c");
+var categoriesController = require("../controllers/categories.c");
 
 /* POST registrar actividades */
 router.post('/', async (req, res) => {
@@ -41,8 +42,13 @@ router.get('/', async (req, res) => {
 });
 
 // Mostrar formulario para crear una actividad
-router.get('/new', (req, res) => {
-  res.render('activities/new');
+router.get('/new', async (req, res) => {
+  try {
+    const categories = await categoriesController.show(); // Obtener la lista de categorías
+    res.render('activities/new', { categories }); // Pasar las categorías a la vista
+  } catch (err) {
+    res.status(500).send(`Error al obtener categorías: ${err}`);
+  }
 });
 
 // Mostrar formulario para editar una actividad
@@ -52,7 +58,9 @@ router.get('/:id/edit', async (req, res) => {
     if (!activity) {
       return res.status(404).send("Actividad no encontrada");
     }
-    res.render('activities/edit', { activity });
+
+    const categories = await categoriesController.show(); // Obtener la lista de categorías
+    res.render('activities/edit', { activity, categories }); // Pasar la actividad y las categorías a la vista
   } catch (err) {
     res.status(500).send(`Error al obtener la actividad: ${err}`);
   }

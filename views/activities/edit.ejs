@@ -1,25 +1,38 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Editar Actividad</title>
   <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
+
 <body>
   <div class="container">
-  <h1>Editar Actividad</h1>
-  <form action="/activities/<%= activity.id %>?_method=PUT" method="POST">
-    <label for="name">Nombre:</label>
-    <input type="text" id="name" name="name" value="<%= activity.name %>" required>
+    <h1>Editar Actividad</h1>
+    <form action="/activities/<%= activity.id %>?_method=PUT" method="POST">
+      <label for="name">Nombre:</label>
+      <input type="text" id="name" name="name" value="<%= activity.name %>" required>
+      <br>
+      <label for="description">Descripción:</label>
+      <textarea id="description" name="description"><%= activity.description %></textarea>
+      <br>
+      <!-- Selector de categorías -->
+      <label for="categoryId">Categoría:</label>
+      <select id="categoryId" name="categoryId" required>
+        <% categories.forEach(category=> { %>
+          <option value="<%= category.id %>" <%=activity.category_id===category.id ? 'selected' : '' %>>
+            <%= category.name %>
+          </option>
+          <% }); %>
+      </select>
+      <br>
+      <button type="submit">Guardar Cambios</button>
+    </form>
     <br>
-    <label for="description">Descripción:</label>
-    <textarea id="description" name="description"><%= activity.description %></textarea>
-    <br>
-    <button type="submit">Guardar Cambios</button>
-  </form>
-  <br>
-  <a href="/activities">Volver a la lista de actividades</a>
-</div>
+    <a href="/activities">Volver a la lista de actividades</a>
+  </div>
 </body>
+
 </html>

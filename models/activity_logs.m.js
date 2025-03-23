@@ -174,8 +174,9 @@ class ActivityLogsModel {
   async getActivitiesByProject(projectId) {
     const query = `
     SELECT 
-      pal.id AS project_activity_log_id,
+      pal.id AS project_activity_log_id, 
       a.name AS activity_name, 
+      a.description AS activity_description,
       c.name AS category_name, 
       al.start_time, 
       al.end_time

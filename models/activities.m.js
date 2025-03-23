@@ -16,25 +16,34 @@ class ActivitiesModel {
 
   // Método para mostrar todas las actividades
   async show() {
-    const query = 'SELECT * FROM activities';
-
     try {
+      const query = `
+        SELECT a.*, c.name AS category_name
+        FROM activities a
+        LEFT JOIN category_activities ca ON a.id = ca.activity_id
+        LEFT JOIN categories c ON ca.category_id = c.id
+      `;
       const [rows] = await pool.query(query);
       return rows;
-    } catch (error) {
-      throw error;
+    } catch (err) {
+      throw new Error(`Error al listar actividades: ${err}`);
     }
   }
 
   // Método para mostrar una actividad por su ID
   async showByID(id) {
-    const query = 'SELECT * FROM activities WHERE id = ?';
-
     try {
+      const query = `
+        SELECT a.*, c.id AS category_id, c.name AS category_name
+        FROM activities a
+        LEFT JOIN category_activities ca ON a.id = ca.activity_id
+        LEFT JOIN categories c ON ca.category_id = c.id
+        WHERE a.id = ?
+      `;
       const [rows] = await pool.query(query, [id]);
       return rows[0];
-    } catch (error) {
-      throw error;
+    } catch (err) {
+      throw new Error(`Error al buscar actividad: ${err}`);
     }
   }
 
@@ -73,6 +82,18 @@ class ActivitiesModel {
     }
     const query = 'INSERT INTO category_activities (activity_id, category_id) VALUES (?, ?)';
     await pool.query(query, [activityId, categoryId]);
+  }
+
+  // Método para actualizar la categoría de una actividad
+  async updateCategory(activityId, categoryId) {
+    if (!(await this.activityExists(activityId))) {
+      throw new Error('La actividad no existe');
+    }
+    if (!(await this.categoryExists(categoryId))) {
+      throw new Error('La categoría no existe');
+    }
+    const query = 'UPDATE category_activities SET category_id = ? WHERE activity_id = ?';
+    await pool.query(query, [categoryId, activityId]);
   }
 
   // Método para eliminar una categoría de una actividad

@@ -2,16 +2,21 @@ const activitiesModel = require("../models/activities.m");
 
 class ActivitiesController {
   async register(data) {
-    const { name, description } = data;
-    if (!name || !description) {
+    const { name, description, categoryId } = data;
+
+    if (!name || !description || !categoryId) {
       return { error: "Todos los campos son requeridos." };
     }
 
     try {
+      // Crear la actividad
       const newActivity = { name, description };
-      await activitiesModel.register(newActivity);
+      const activityId = await activitiesModel.register(newActivity);
 
-      return { success: true };
+      // Relacionar la actividad con la categoría
+      await activitiesModel.addCategory(activityId, categoryId);
+
+      return { success: true, activityId };
     } catch (error) {
       return { error: `Error al registrar actividad: ${error.message}` };
     }
@@ -39,24 +44,28 @@ class ActivitiesController {
   }
 
   async update(id, data) {
-    const { name, description } = data;
+    const { name, description, categoryId } = data;
 
     try {
+      // Verificar si la actividad existe
       const activity = await activitiesModel.showByID(id);
       if (!activity) {
         return { error: `No se encontró la actividad con id: ${id}` };
       }
 
+      // Actualizar la actividad
       const updatedActivity = {
         name: name || activity.name,
         description: description || activity.description
       };
-
       await activitiesModel.edit(updatedActivity, id);
 
+      // Actualizar la relación con la categoría
+      await activitiesModel.updateCategory(id, categoryId);
+
       return { success: true };
-    } catch (err) {
-      throw new Error(`Error al editar la actividad: ${err}`);
+    } catch (error) {
+      throw new Error(`Error al editar la actividad: ${error.message}`);
     }
   }
 

@@ -95,6 +95,7 @@ router.get('/:id/edit', authenticate, async (req, res) => {
   }
 });
 
+// Mostrar formulario para editar un registro de actividad realizada
 router.get('/:projectId/activity-logs/:activityLogId/edit', authenticate, async (req, res) => {
   try {
     const projectId = req.params.projectId;
@@ -150,10 +151,6 @@ router.get('/:id', authenticate, async (req, res) => {
         details: 'Proyecto no encontrado',
         redirectUrl: '/projects'
       });
-    }
-
-    function isValidDate(date) {
-      return date && !isNaN(new Date(date).getTime());
     }
 
     // Obtener las actividades creadas
@@ -229,6 +226,7 @@ router.delete('/:id', authenticate, async (req, res) => {
   }
 });
 
+// Agregar actividad realizada a un proyecto
 router.post('/:projectId/activity-logs', authenticate, async (req, res) => {
   try {
     const { activityId, startTime, endTime } = req.body;

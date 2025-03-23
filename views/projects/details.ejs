@@ -24,11 +24,11 @@
         <li>
           <strong>
             <%= activity.activity_name %>
-              (<%= activity.category_name %>)
-          </strong>:
-
-          Inicio: <%= formatDate(activity.start_time) %> -
-            Fin: <%= formatDate(activity.end_time) %>
+              (<%= activity.category_name %>):
+          </strong>
+          <%= activity.activity_description %>.
+          <strong>Inicio:</strong> <%= formatDate(activity.start_time) %> -
+            <strong>Fin:</strong> <%= formatDate(activity.end_time) %>
               <!-- Botón para editar la actividad realizada -->
               <a href="/projects/<%= project.id %>/activity-logs/<%= activity.project_activity_log_id %>/edit"
                 class="button">Editar</a>
@@ -47,7 +47,10 @@
       <select id="activityId" name="activityId" required>
         <% activities.forEach(activity=> { %>
           <option value="<%= activity.id %>">
-            <%= activity.name %>
+            <strong>
+              <%= activity.name %>:
+            </strong>
+            <%= activity.description %>. Categoría: <%= activity.category_name || 'Sin categoría' %>
           </option>
           <% }); %>
       </select>

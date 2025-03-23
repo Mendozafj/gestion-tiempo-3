@@ -18,6 +18,14 @@
       <label for="description">Descripción:</label>
       <textarea id="description" name="description"></textarea>
       <br>
+      <!-- Selector de categorías -->
+      <label for="categoryId">Categoría:</label>
+      <select id="categoryId" name="categoryId" required>
+        <% categories.forEach(category => { %>
+          <option value="<%= category.id %>"><%= category.name %></option>
+        <% }); %>
+      </select>
+      <br>
       <button type="submit">Crear Actividad</button>
     </form>
     <br>

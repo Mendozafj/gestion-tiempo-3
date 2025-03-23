@@ -16,8 +16,8 @@
       <% projects.forEach(project => { %>
         <li>
           <strong>
-            <%= project.name %>
-          </strong>: <%= project.description %>
+            <%= project.name %>:
+          </strong> <%= project.description %>
             <br>
             <a href="/projects/<%= project.id %>" class="button">Ver Detalles</a>
             <a href="/projects/<%= project.id %>/edit" class="button">Editar</a>

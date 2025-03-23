@@ -16,13 +16,17 @@
       <% activities.forEach(activity=> { %>
         <li>
           <strong>
-            <%= activity.name %>
-          </strong>: <%= activity.description %>
+            <%= activity.name %>:
+          </strong>
+          <%= activity.description %>
             <br>
-            <a href="/activities/<%= activity.id %>/edit" class="button">Editar</a>
-            <form action="/activities/<%= activity.id %>?_method=DELETE" method="POST" style="display:inline;">
-              <button type="submit" class="delete">Eliminar</button>
-            </form>
+            <strong>Categoría:</strong>
+            <%= activity.category_name || 'Sin categoría' %>
+              <br>
+              <a href="/activities/<%= activity.id %>/edit" class="button">Editar</a>
+              <form action="/activities/<%= activity.id %>?_method=DELETE" method="POST" style="display:inline;">
+                <button type="submit" class="delete">Eliminar</button>
+              </form>
         </li>
         <% }); %>
     </ul>
