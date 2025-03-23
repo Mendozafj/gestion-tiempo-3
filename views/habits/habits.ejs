@@ -18,7 +18,9 @@
       <% habits.forEach(habit=> { %>
         <li>
           <strong>
-            <%= habit.name %>:
+            <a href="/habits/<%= habit.id %>">
+              <%= habit.name %>:
+            </a>
           </strong>
           <%= habit.description %>
             <br>

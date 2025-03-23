@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles del Hábito</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <div class="container">
+        <h1>Detalles del Hábito</h1>
+        <h2>
+            <%= habit.name %>
+        </h2>
+        <p>
+            <%= habit.description %>
+        </p>
+
+        <h3>Actividades asociadas:</h3>
+        <ul>
+            <% activities.forEach(activity=> { %>
+                <li>
+                    <%= activity.name %>
+                        <form action="/habits/<%= habit.id %>/activities/<%= activity.relationId %>?_method=DELETE" method="POST"
+                            style="display:inline;">
+                            <button type="submit" class="delete">Eliminar</button>
+                        </form>
+                </li>
+                <% }); %>
+        </ul>
+
+        <a href="/habits/<%= habit.id %>/add-activity" class="button">Agregar Actividad</a>
+        <br>
+        <a href="/habits">Volver a la lista de hábitos</a>
+    </div>
+</body>
+
+</html>

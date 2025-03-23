@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var habitsController = require("../controllers/habits.c");
+var activitiesController = require("../controllers/activities.c");
 const { authenticate } = require('../middleware/auth');
 
 /* POST registrar hábitos */
@@ -84,11 +85,13 @@ router.get('/:id', async (req, res) => {
   try {
     const habit = await habitsController.showByID(req.params.id);
     if (!habit) {
-      return res.status(404).send(`No se encontró el hábito con id: ${req.params.id}`);
+      return res.status(404).send("Hábito no encontrado");
     }
-    res.status(200).send(habit);
-  } catch (err) {
-    res.status(500).send(`Error al buscar hábito: ${err}`);
+
+    const activities = await habitsController.getActivities(req.params.id);
+    res.render('habits/details', { habit, activities, user: req.user });
+  } catch (error) {
+    res.status(500).send(`Error al mostrar los detalles del hábito: ${error.message}`);
   }
 });
 
@@ -149,28 +152,73 @@ router.delete('/:id', async (req, res) => {
 });
 
 /* POST agregar actividad a hábito */
-router.post('/:habitId/activities/:activityId', async (req, res) => {
+router.post('/:habitId/activities', async (req, res) => {
+  const { activityId } = req.body;
+  const { habitId } = req.params;
+
   try {
-    const result = await habitsController.addActivity(req.params.habitId, req.params.activityId);
+    const result = await habitsController.addActivity(habitId, activityId);
     if (result.error) {
-      return res.status(400).send(result.error);
+      return res.status(400).render('message', {
+        message: 'Error',
+        messageType: 'error',
+        details: result.error,
+        redirectUrl: `/habits/${habitId}/add-activity` // Redirigir de vuelta al formulario
+      });
     }
-    res.status(201).send("Actividad agregada");
-  } catch (err) {
-    res.status(500).send(`Error al agregar actividad`);
+
+    res.status(201).render('message', {
+      message: 'Éxito',
+      messageType: 'success',
+      details: 'Actividad agregada al hábito con éxito.',
+      redirectUrl: `/habits/${habitId}` // Redirigir de vuelta a los detalles del hábito
+    });
+  } catch (error) {
+    res.status(500).render('message', {
+      message: 'Error',
+      messageType: 'error',
+      details: `Error al agregar actividad al hábito: ${error.message}`,
+      redirectUrl: `/habits/${habitId}/add-activity` // Redirigir de vuelta al formulario
+    });
+  }
+});
+
+// Mostrar formulario para agregar actividad a un hábito
+router.get('/:id/add-activity', async (req, res) => {
+  try {
+    const habit = await habitsController.showByID(req.params.id);
+    const activities = await activitiesController.show(); // Asegúrate de tener un método para obtener todas las actividades
+    res.render('habits/add-activity', { habit, activities });
+  } catch (error) {
+    res.status(500).send(`Error al mostrar el formulario: ${error.message}`);
   }
 });
 
 /* DELETE eliminar actividad de hábito */
-router.delete('/activities/:relationId', async (req, res) => {
+router.delete('/:habitId/activities/:relationId', async (req, res) => {
   try {
     const result = await habitsController.removeActivity(req.params.relationId);
     if (result.error) {
-      return res.status(400).send(result.error);
+      return res.status(400).render('message', {
+        message: 'Error',
+        messageType: 'error',
+        details: result.error,
+        redirectUrl: `/habits/${req.params.habitId}` // Redirigir de vuelta a los detalles del hábito
+      });
     }
-    res.status(200).send("Actividad eliminada del hábito");
+    res.status(200).render('message', {
+      message: 'Éxito',
+      messageType: 'success',
+      details: 'Actividad eliminada del hábito con éxito.',
+      redirectUrl: `/habits/${req.params.habitId}` // Redirigir de vuelta a los detalles del hábito
+    });
   } catch (err) {
-    res.status(500).send(`Error al eliminar actividad del hábito.`);
+    res.status(500).render('message', {
+      message: 'Error',
+      messageType: 'error',
+      details: 'Error al eliminar actividad del hábito.',
+      redirectUrl: `/habits/${req.params.habitId}` // Redirigir de vuelta a los detalles del hábito
+    });
   }
 });
 

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Actividad a Hábito</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <div class="container">
+        <h1>Agregar Actividad a Hábito</h1>
+        <form action="/habits/<%= habit.id %>/activities" method="POST">
+            <label for="activity">Selecciona una actividad:</label>
+            <select id="activity" name="activityId" required>
+                <% activities.forEach(activity=> { %>
+                    <option value="<%= activity.id %>">
+                        <%= activity.name %>
+                    </option>
+                    <% }); %>
+            </select>
+            <br>
+            <button type="submit">Agregar Actividad</button>
+        </form>
+        <br>
+        <a href="/habits/<%= habit.id %>">Volver al hábito</a>
+    </div>
+</body>
+
+</html>
