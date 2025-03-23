@@ -32,7 +32,12 @@ function redirectIfAuthenticated(req, res, next) {
 function authorize(roles = []) {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ error: 'Acceso prohibido' });
+      return res.status(403).render('message', {
+        message: 'Acceso prohibido',
+        messageType: 'error',
+        details: 'No tienes permiso para acceder a esta página.',
+        redirectUrl: '/dashboard' // Redirigir al dashboard
+      });
     }
     next();
   };

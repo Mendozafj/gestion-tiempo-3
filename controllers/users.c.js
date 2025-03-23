@@ -54,34 +54,28 @@ class UsersController {
     }
   }
 
+  // Método para actualizar un usuario
   async update(id, data) {
-    const { name, username, password, role = "user" } = data;
+    const { username, name, password, role } = data;
 
     try {
       const user = await usersModel.showByID(id);
       if (!user) {
-        return { error: `No se encontró el usuario con id: ${id}` };
+        return { error: 'Usuario no encontrado.' };
       }
 
-      if (username) {
-        const existingUser = await usersModel.showByUsernameExcludingID(username, id);
-        if (existingUser) {
-          return { error: "El nombre de usuario ya está en uso por otro usuario." };
-        }
-      }
-
+      // Si la contraseña está vacía o es nula, no la actualizamos
       const updatedUser = {
-        name: name || user.name,
         username: username || user.username,
-        password: password || user.password,
+        name: name || user.name,
+        password: password || "", // Si no se proporciona una nueva contraseña, se envía una cadena vacía
         role: role || user.role
       };
 
       await usersModel.edit(updatedUser, id);
-
       return { success: true };
-    } catch (err) {
-      throw new Error(`Error al editar el usuario: ${err}`);
+    } catch (error) {
+      return { error: `Error al actualizar el usuario: ${error.message}` };
     }
   }
 

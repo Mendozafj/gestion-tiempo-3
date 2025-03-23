@@ -29,6 +29,9 @@
       <a href="/categories" class="button">Ver Categorías</a>
       <a href="/habits" class="button">Ver Hábitos</a>
       <a href="/projects" class="button">Ver Proyectos</a>
+      <% if (user.role==='admin' ) { %>
+        <a href="/users" class="button">Gestionar Usuarios</a>
+        <% } %>
     </div>
 
     <!-- Mensaje adicional -->

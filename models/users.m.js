@@ -76,9 +76,19 @@ class UsersModel {
 
   // Método para editar un usuario por su ID
   async edit(updatedUser, id) {
-    const hashedPassword = await bcrypt.hash(updatedUser.password, 10);
-    const query = 'UPDATE users SET username = ?, name = ?, password = ?, role = ? WHERE id = ?';
-    const values = [updatedUser.username, updatedUser.name, hashedPassword, updatedUser.role || 'user', id];
+    let query;
+    let values;
+
+    // Si no se proporciona una nueva contraseña, no la actualizamos
+    if (!updatedUser.password || updatedUser.password.trim() === "") {
+      query = 'UPDATE users SET username = ?, name = ?, role = ? WHERE id = ?';
+      values = [updatedUser.username, updatedUser.name, updatedUser.role || 'user', id];
+    } else {
+      // Si se proporciona una nueva contraseña, la encriptamos
+      const hashedPassword = await bcrypt.hash(updatedUser.password, 10);
+      query = 'UPDATE users SET username = ?, name = ?, password = ?, role = ? WHERE id = ?';
+      values = [updatedUser.username, updatedUser.name, hashedPassword, updatedUser.role || 'user', id];
+    }
 
     try {
       const [result] = await pool.query(query, values);

@@ -1,28 +1,53 @@
 var express = require('express');
 var router = express.Router();
 var usersController = require("../controllers/users.c");
-const { authenticate } = require('../middleware/auth');
+const { authenticate, authorize } = require('../middleware/auth');
 
 /* POST registrar usuarios */
-router.post('/', async (req, res) => {
+router.post('/', authenticate, authorize(['admin']), async (req, res) => {
   try {
     const result = await usersController.register(req.body);
     if (result.error) {
-      return res.status(400).send(result.error);
+      return res.status(400).render('message', {
+        message: 'Error',
+        messageType: 'error',
+        details: result.error,
+        redirectUrl: '/users/new'
+      });
     }
-    return res.status(201).send("Usuario creado");
+    res.status(201).render('message', {
+      message: 'Éxito',
+      messageType: 'success',
+      details: 'Usuario creado con éxito.',
+      redirectUrl: '/users'
+    });
   } catch (error) {
-    res.status(500).send("Error al registrar el usuario");
+    res.status(500).render('message', {
+      message: 'Error',
+      messageType: 'error',
+      details: `Error al registrar el usuario: ${error.message}`,
+      redirectUrl: '/users/new'
+    });
   }
 });
 
-/* GET mostrar usuarios. */
-router.get('/', async (req, res) => {
+/* GET mostrar formulario de creación de usuario */
+router.get('/new', authenticate, authorize(['admin']), (req, res) => {
+  res.render('users/new', { user: req.user });
+});
+
+// Rutas protegidas para administradores
+router.get('/', authenticate, authorize(['admin']), async (req, res) => {
   try {
     const users = await usersController.show();
-    res.status(200).render('users', { users });  // Renderiza la vista 'users.ejs'
+    res.status(200).render('users/index', { users, user: req.user });
   } catch (err) {
-    res.status(500).send(`Error al listar usuarios: ${err}`);
+    res.status(500).render('message', {
+      message: 'Error',
+      messageType: 'error',
+      details: `Error al listar usuarios: ${err}`,
+      redirectUrl: '/dashboard'
+    });
   }
 });
 
@@ -53,28 +78,80 @@ router.get('/username/:username', async (req, res) => {
 });
 
 /* PUT editar usuario */
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticate, authorize(['admin']), async (req, res) => {
   try {
     const result = await usersController.update(req.params.id, req.body);
     if (result.error) {
-      return res.status(400).send(result.error);
+      return res.status(400).render('message', {
+        message: 'Error',
+        messageType: 'error',
+        details: result.error,
+        redirectUrl: `/users/${req.params.id}/edit`
+      });
     }
-    res.status(200).send("Usuario editado");
-  } catch (err) {
-    res.status(500).send(`Error al editar el usuario: ${err}`);
+    res.status(200).render('message', {
+      message: 'Éxito',
+      messageType: 'success',
+      details: 'Usuario actualizado con éxito.',
+      redirectUrl: '/users'
+    });
+  } catch (error) {
+    res.status(500).render('message', {
+      message: 'Error',
+      messageType: 'error',
+      details: `Error al actualizar el usuario: ${error.message}`,
+      redirectUrl: `/users/${req.params.id}/edit`
+    });
   }
 });
 
+// Ruta para mostrar el formulario de edición de un usuario
+router.get('/:id/edit', authenticate, authorize(['admin']), async (req, res) => {
+  try {
+    const user = await usersController.showByID(req.params.id);
+    if (!user) {
+      return res.status(404).render('message', {
+        message: 'Error',
+        messageType: 'error',
+        details: 'Usuario no encontrado.',
+        redirectUrl: '/users'
+      });
+    }
+    res.render('users/edit', { user, currentUser: req.user });
+  } catch (error) {
+    res.status(500).render('message', {
+      message: 'Error',
+      messageType: 'error',
+      details: `Error al cargar el formulario de edición: ${error.message}`,
+      redirectUrl: '/users'
+    });
+  }
+});
 /* DELETE eliminar usuario */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticate, authorize(['admin']), async (req, res) => {
   try {
     const result = await usersController.delete(req.params.id);
     if (result.error) {
-      return res.status(400).send(result.error);
+      return res.status(400).render('message', {
+        message: 'Error',
+        messageType: 'error',
+        details: result.error,
+        redirectUrl: '/users'
+      });
     }
-    res.status(200).send("Usuario eliminado")
-  } catch (err) {
-    res.status(500).send(`Error al eliminar usuario: ${err}`);
+    res.status(200).render('message', {
+      message: 'Éxito',
+      messageType: 'success',
+      details: 'Usuario eliminado con éxito.',
+      redirectUrl: '/users'
+    });
+  } catch (error) {
+    res.status(500).render('message', {
+      message: 'Error',
+      messageType: 'error',
+      details: `Error al eliminar el usuario: ${error.message}`,
+      redirectUrl: '/users'
+    });
   }
 });
 

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Usuario</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <div class="container">
+        <h1>Editar Usuario</h1>
+        <form action="/users/<%= user.id %>?_method=PUT" method="POST">
+            <label for="name">Nombre:</label>
+            <input type="text" id="name" name="name" value="<%= user.name %>" required>
+            <br>
+            <label for="username">Nombre de usuario:</label>
+            <input type="text" id="username" name="username" value="<%= user.username %>" required>
+            <br>
+            <label for="password">Nueva contraseña (dejar en blanco para no cambiar):</label>
+            <input type="password" id="password" name="password">
+            <br>
+            <label for="role">Rol:</label>
+            <select id="role" name="role" required>
+                <option value="user" <%=user.role==='user' ? 'selected' : '' %>>Usuario</option>
+                <option value="admin" <%=user.role==='admin' ? 'selected' : '' %>>Administrador</option>
+            </select>
+            <br>
+            <button type="submit">Guardar Cambios</button>
+        </form>
+        <br>
+        <a href="/users" class="button">Volver a la lista de usuarios</a>
+    </div>
+</body>
+
+</html>

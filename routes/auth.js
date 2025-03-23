@@ -19,19 +19,24 @@ router.get('/register', redirectIfAuthenticated, (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const result = await authController.login(req, res);
-    res.redirect('/dashboard'); // Redirigir al inicio después del login exitoso
+
+    // Si el login es exitoso, redirigir al dashboard
+    res.redirect('/dashboard');
   } catch (error) {
     let messageType = 'error';
     let message = 'Error interno del servidor';
 
-    if (error.message === 'Usuario y contraseña son requeridos') {
-      message = 'Por favor, ingresa tu nombre de usuario y contraseña.';
+    // Personalizar mensajes de error según el tipo de error
+    if (error && error.message) {
+      message = error.message;
+    } 
 
-    } if (error.message === 'Credenciales inválidas') {
-      message = 'Nombre de usuario o contraseña incorrectos.';
-    }
-
-    res.render('auth/login', { message, messageType });
+    // Renderizar la vista de login con el mensaje de error
+    res.render('auth/login', {
+      message,
+      messageType,
+      username: req.body.username // Mantener el nombre de usuario ingresado
+    });
   }
 });
 
