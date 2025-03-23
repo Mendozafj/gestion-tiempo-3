@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Actividad Realizada</title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+  <div class="container">
+    <h1>Editar Actividad Realizada</h1>
+    <form action="/projects/<%= projectId %>/activity-logs/<%= activityLogId %>?_method=PUT" method="POST">
+      <label for="startTime">Fecha y Hora de Inicio:</label>
+      <input type="datetime-local" id="startTime" name="startTime" 
+             value="<%= activityLog.start_time && !isNaN(new Date(activityLog.start_time).getTime()) ? new Date(activityLog.start_time).toISOString().slice(0, 16) : '' %>" 
+             >
+      <br>
+      <label for="endTime">Fecha y Hora de Finalización:</label>
+      <input type="datetime-local" id="endTime" name="endTime" 
+             value="<%= activityLog.end_time && !isNaN(new Date(activityLog.end_time).getTime()) ? new Date(activityLog.end_time).toISOString().slice(0, 16) : '' %>">
+      <br>
+      <button type="submit">Guardar Cambios</button>
+    </form>
+    <br>
+    <a href="/projects/<%= projectId %>">Volver a los detalles del proyecto</a>
+  </div>
+</body>
+
+</html>

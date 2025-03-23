@@ -64,7 +64,7 @@ class ProjectsModel {
     try {
       await connection.beginTransaction(); // Iniciar transacción
 
-      // 1. Eliminar las actividades realizadas asociadas al proyecto
+      // Eliminar las actividades realizadas asociadas al proyecto
       const deleteActivitiesQuery = `
       DELETE al FROM activity_logs al
       JOIN project_activity_logs pal ON al.id = pal.activity_log_id
@@ -72,7 +72,7 @@ class ProjectsModel {
     `;
       await connection.query(deleteActivitiesQuery, [projectId]);
 
-      // 2. Eliminar el proyecto (esto eliminará automáticamente las relaciones en project_activity_logs debido a ON DELETE CASCADE)
+      // Eliminar el proyecto (esto eliminará automáticamente las relaciones en project_activity_logs debido a ON DELETE CASCADE)
       const deleteProjectQuery = 'DELETE FROM projects WHERE id = ?';
       await connection.query(deleteProjectQuery, [projectId]);
 
@@ -162,7 +162,6 @@ class ProjectsModel {
       throw error;
     }
   }
-
 
   // Obtener las actividades realizadas de un proyecto
   async getProjectActivityLogs(projectId) {

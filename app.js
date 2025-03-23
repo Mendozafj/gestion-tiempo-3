@@ -29,6 +29,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Función helper para formatear fechas
+app.locals.formatDate = (date) => {
+  if (date && !isNaN(new Date(date).getTime())) {
+    return new Intl.DateTimeFormat('es-VE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(new Date(date));
+  }
+  return 'No especificado';
+};
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/activities', activitiesRouter);
@@ -39,12 +53,12 @@ app.use('/activity-logs', activityLogsRouter);
 app.use('/auth', authRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

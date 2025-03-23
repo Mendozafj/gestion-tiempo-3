@@ -1,18 +1,22 @@
 const projectsModel = require("../models/projects.m");
+const usersModel = require("../models/users.m"); // Importar el modelo de usuarios
 const activityLogsModel = require("../models/activity_logs.m");
 
 class ProjectsController {
   async register(data) {
-    const { name, description } = data;
-    if (!name || !description) {
+    const { name, description, userId } = data; // Añadir userId a los datos
+    if (!name || !description || !userId) {
       return { error: "Todos los campos son requeridos." };
     }
 
     try {
       const newProject = { name, description };
-      await projectsModel.register(newProject);
+      const projectId = await projectsModel.register(newProject);
 
-      return { success: true };
+      // Relacionar el proyecto con el usuario
+      await usersModel.addProjectToUser(userId, projectId);
+
+      return { success: true, projectId };
     } catch (error) {
       return { error: `Error al registrar proyecto: ${error.message}` };
     }
@@ -70,6 +74,9 @@ class ProjectsController {
         return { error: `No se encontró el proyecto con id: ${id}` };
       }
 
+      // Eliminar la relación entre el proyecto y el usuario
+      await usersModel.removeProjectFromUser(id);
+
       // Eliminar el proyecto y sus actividades realizadas
       await projectsModel.deleteProjectAndActivities(id);
       return { success: true };
@@ -104,7 +111,7 @@ class ProjectsController {
   // Obtener las actividades realizadas de un proyecto
   async getProjectActivityLogs(projectId) {
     try {
-      const activityLogs = await projectsModel.getProjectActivityLogs(projectId);
+      const activityLogs = await activityLogsModel.getActivitiesByProject(projectId);
       return activityLogs;
     } catch (error) {
       throw new Error(`Error al obtener actividades realizadas del proyecto: ${error.message}`);

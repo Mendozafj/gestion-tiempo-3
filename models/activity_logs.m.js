@@ -173,14 +173,20 @@ class ActivityLogsModel {
   // Obtener actividades realizadas por proyecto
   async getActivitiesByProject(projectId) {
     const query = `
-      SELECT a.name AS activity_name, c.name AS category_name, al.start_time, al.end_time
-      FROM activity_logs al
-      JOIN activities a ON al.activity_id = a.id
-      JOIN category_activities ca ON a.id = ca.activity_id
-      JOIN categories c ON ca.category_id = c.id
-      JOIN project_activity_logs pal ON al.id = pal.activity_log_id
-      WHERE pal.project_id = ?
-    `;
+    SELECT 
+      pal.id AS project_activity_log_id,
+      a.name AS activity_name, 
+      c.name AS category_name, 
+      al.start_time, 
+      al.end_time
+    FROM activity_logs al
+    JOIN activities a ON al.activity_id = a.id
+    JOIN category_activities ca ON a.id = ca.activity_id
+    JOIN categories c ON ca.category_id = c.id
+    JOIN project_activity_logs pal ON al.id = pal.activity_log_id
+    WHERE pal.project_id = ?
+    ORDER BY al.start_time ASC; 
+  `;
     try {
       const [rows] = await pool.query(query, [projectId]);
       return rows;

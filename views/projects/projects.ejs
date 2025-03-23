@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Proyectos</title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+  <div class="container">
+    <h1>Lista de Proyectos</h1>
+    <a href="/projects/new" class="button">Crear Nuevo Proyecto</a>
+    <ul>
+      <% projects.forEach(project => { %>
+        <li>
+          <strong>
+            <%= project.name %>
+          </strong>: <%= project.description %>
+            <br>
+            <a href="/projects/<%= project.id %>" class="button">Ver Detalles</a>
+            <a href="/projects/<%= project.id %>/edit" class="button">Editar</a>
+            <form action="/projects/<%= project.id %>?_method=DELETE" method="POST" style="display:inline;">
+              <button type="submit" class="delete">Eliminar</button>
+            </form>
+        </li>
+      <% }); %>
+    </ul>
+    <!-- Botón para regresar a la vista principal -->
+    <div class="back-to-home">
+      <a href="/dashboard" class="button">Regresar a la página principal</a>
+    </div>
+  </div>
+</body>
+
+</html>

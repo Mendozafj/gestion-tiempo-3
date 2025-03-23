@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalles del Proyecto</title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+  <div class="container">
+    <h1>Detalles del Proyecto</h1>
+    <h2>
+      <%= project.name %>
+    </h2>
+    <p>
+      <%= project.description %>
+    </p>
+
+    <h3>Actividades en el Proyecto</h3>
+    <ul>
+      <% activitiesProject.forEach(activity=> { %>
+        <li>
+          <strong>
+            <%= activity.activity_name %>
+              (<%= activity.category_name %>)
+          </strong>:
+
+          Inicio: <%= formatDate(activity.start_time) %> -
+            Fin: <%= formatDate(activity.end_time) %>
+              <!-- Botón para editar la actividad realizada -->
+              <a href="/projects/<%= project.id %>/activity-logs/<%= activity.project_activity_log_id %>/edit"
+                class="button">Editar</a>
+              <form
+                action="/projects/<%= project.id %>/activity-logs/<%= activity.project_activity_log_id %>?_method=DELETE"
+                method="POST" style="display:inline;">
+                <button type="submit" class="delete">Eliminar</button>
+              </form>
+        </li>
+        <% }); %>
+    </ul>
+
+    <h3>Agregar Nueva Actividad Realizada</h3>
+    <form action="/projects/<%= project.id %>/activity-logs" method="POST">
+      <label for="activityId">Actividad:</label>
+      <select id="activityId" name="activityId" required>
+        <% activities.forEach(activity=> { %>
+          <option value="<%= activity.id %>">
+            <%= activity.name %>
+          </option>
+          <% }); %>
+      </select>
+      <br>
+      <label for="startTime">Fecha y Hora de Inicio:</label>
+      <input type="datetime-local" id="startTime" name="startTime">
+      <br>
+      <label for="endTime">Fecha y Hora de Finalización:</label>
+      <input type="datetime-local" id="endTime" name="endTime">
+      <br>
+      <button type="submit">Agregar Actividad Realizada</button>
+    </form>
+
+    <!-- Botón para agregar una actividad al proyecto -->
+    <a href="/activities" class="button">Agregar Actividad</a>
+
+    <!-- Botón para regresar a la lista de proyectos -->
+    <div class="back-to-home">
+      <a href="/projects" class="button">Regresar a la lista de proyectos</a>
+    </div>
+  </div>
+</body>
+
+</html>

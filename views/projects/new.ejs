@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear Nuevo Proyecto</title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+  <div class="container">
+    <h1>Crear Nuevo Proyecto</h1>
+    <form action="/projects" method="POST">
+      <label for="name">Nombre:</label>
+      <input type="text" id="name" name="name" required>
+      <br>
+      <label for="description">Descripción:</label>
+      <textarea id="description" name="description"></textarea>
+      <br>
+      <button type="submit">Crear Proyecto</button>
+    </form>
+    <br>
+    <a href="/projects">Volver a la lista de proyectos</a>
+  </div>
+</body>
+
+</html>
