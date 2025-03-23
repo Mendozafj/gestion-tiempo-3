@@ -3,7 +3,7 @@ var router = express.Router();
 const { authenticate, redirectIfAuthenticated } = require('../middleware/auth');
 
 /* GET home page. */
-router.get('/', redirectIfAuthenticated,function (req, res, next) {
+router.get('/', redirectIfAuthenticated, function (req, res, next) {
   res.render('index', { title: 'Gestión del Tiempo', user: req.user });
 });
 

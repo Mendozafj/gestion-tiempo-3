@@ -12,19 +12,26 @@
   <div class="container">
     <h1>Lista de Hábitos</h1>
     <a href="/habits/new" class="button">Crear Nuevo Hábito</a>
+    <!-- Botón para ver los hábitos del usuario actual -->
+    <a href="/users/<%= user.id %>/habits" class="button">Ver mis hábitos</a>
     <ul>
-      <% habits.forEach(habit => { %>
+      <% habits.forEach(habit=> { %>
         <li>
           <strong>
-            <%= habit.name %>
-          </strong>: <%= habit.description %>
+            <%= habit.name %>:
+          </strong>
+          <%= habit.description %>
             <br>
             <a href="/habits/<%= habit.id %>/edit" class="button">Editar</a>
             <form action="/habits/<%= habit.id %>?_method=DELETE" method="POST" style="display:inline;">
               <button type="submit" class="delete">Eliminar</button>
             </form>
+            <!-- Botón para agregar el hábito al usuario -->
+            <form action="/users/<%= user.id %>/habits/<%= habit.id %>" method="POST" style="display:inline;">
+              <button type="submit" class="add">Agregar a mis hábitos</button>
+            </form>
         </li>
-      <% }); %>
+        <% }); %>
     </ul>
     <!-- Botón para regresar a la vista principal -->
     <div class="back-to-home">

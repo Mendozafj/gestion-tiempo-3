@@ -4,7 +4,7 @@ const habitsModel = require("../models/habits.m");
 
 class UsersController {
   async register(data) {
-    const { name, username, password, role= "user" } = data;
+    const { name, username, password, role = "user" } = data;
     if (!name || !username || !password) {
       return { error: "Todos los campos son requeridos." };
     }
@@ -176,6 +176,7 @@ class UsersController {
       throw new Error(`Error al obtener hábitos del usuario: ${error.message}`);
     }
   }
+
   // Eliminar la relación entre un proyecto y un usuario
   async removeProjectFromUser(relationId) {
     try {

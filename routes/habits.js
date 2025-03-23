@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var habitsController = require("../controllers/habits.c");
+const { authenticate } = require('../middleware/auth');
 
 /* POST registrar hábitos */
 router.post('/', async (req, res) => {
@@ -31,12 +32,22 @@ router.post('/', async (req, res) => {
 });
 
 /* GET mostrar hábitos. */
-router.get('/', async (req, res) => {
+router.get('/', authenticate, async (req, res) => {
   try {
     const habits = await habitsController.show();
-    res.status(200).render('habits/habits', { habits });  // Renderiza la vista 'habits.ejs'
+    res.status(200).render('habits/habits', { habits, user: req.user });  // Renderiza la vista 'habits.ejs'
   } catch (err) {
     res.status(500).send(`Error al listar hábitos: ${err}`);
+  }
+});
+
+// Obtener los hábitos de un usuario
+router.get('/:userId/habits', authenticate, async (req, res) => {
+  try {
+    const habits = await usersController.getUserHabits(req.params.userId);
+    res.status(200).render('users/habits', { userHabits: habits, user: req.user });
+  } catch (err) {
+    res.status(500).send(`Error al obtener hábitos del usuario: ${err}`);
   }
 });
 

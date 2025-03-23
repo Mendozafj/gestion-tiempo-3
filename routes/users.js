@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var usersController = require("../controllers/users.c");
+const { authenticate } = require('../middleware/auth');
 
 /* POST registrar usuarios */
 router.post('/', async (req, res) => {
@@ -95,11 +96,36 @@ router.post('/:userId/habits/:habitId', async (req, res) => {
   try {
     const result = await usersController.addHabitToUser(req.params.userId, req.params.habitId);
     if (result.error) {
-      return res.status(400).send(result.error);
+      return res.status(400).render('message', {
+        message: 'Error',
+        messageType: 'error',
+        details: result.error,
+        redirectUrl: '/habits'
+      });
     }
-    res.status(201).send("Hábito relacionado con el usuario");
+    res.status(201).render('message', {
+      message: 'Hábito agregado',
+      messageType: 'success',
+      details: `El hábito ha sido agregado a tu lista de hábitos.`,
+      redirectUrl: '/habits'
+    });
   } catch (err) {
-    res.status(500).send(`Error al relacionar hábito con usuario: ${err}`);
+    res.status(500).render('message', {
+      message: 'Error',
+      messageType: 'error',
+      details: `Error al agregar el hábito: ${err}`,
+      redirectUrl: '/habits'
+    });
+  }
+});
+
+// Obtener los hábitos de un usuario
+router.get('/:userId/habits', async (req, res) => {
+  try {
+    const habits = await usersController.getUserHabits(req.params.userId);
+    res.status(200).render('users/habits', { userHabits: habits, userId: req.params.userId });
+  } catch (err) {
+    res.status(500).send(`Error al obtener hábitos del usuario: ${err}`);
   }
 });
 
@@ -137,15 +163,30 @@ router.delete('/projects/:relationId', async (req, res) => {
 });
 
 // Eliminar la relación entre un hábito y un usuario
-router.delete('/habits/:relationId', async (req, res) => {
+router.delete('/habits/:relationId', authenticate, async (req, res) => {
   try {
     const result = await usersController.removeHabitFromUser(req.params.relationId);
     if (result.error) {
-      return res.status(400).send(result.error);
+      return res.status(400).render('message', {
+        message: 'Error',
+        messageType: 'error',
+        details: result.error,
+        redirectUrl: `/users/${req.user.id}/habits` // Redirigir a la lista de hábitos del usuario
+      });
     }
-    res.status(200).send("Relación entre hábito y usuario eliminada");
+    res.status(200).render('message', {
+      message: 'Hábito eliminado',
+      messageType: 'success',
+      details: `El hábito ha sido eliminado de tu lista de hábitos.`,
+      redirectUrl: `/users/${req.user.id}/habits` // Redirigir a la lista de hábitos del usuario
+    });
   } catch (err) {
-    res.status(500).send(`Error al eliminar relación entre hábito y usuario: ${err}`);
+    res.status(500).render('message', {
+      message: 'Error',
+      messageType: 'error',
+      details: `Error al eliminar el hábito: ${err}`,
+      redirectUrl: `/users/${req.user.id}/habits` // Redirigir a la lista de hábitos del usuario
+    });
   }
 });
 

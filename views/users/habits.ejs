@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Hábitos</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <div class="container">
+        <h1>Mis Hábitos</h1>
+        <ul>
+            <% userHabits.forEach(habit=> { %>
+                <li>
+                    <strong>
+                        <%= habit.name %>:
+                    </strong>
+                    <%= habit.description %>
+                        <!-- Botón para eliminar el hábito del usuario -->
+                        <form action="/users/habits/<%= habit.relationId %>?_method=DELETE" method="POST"
+                            style="display:inline;">
+                            <button type="submit" class="delete">Eliminar de mis hábitos</button>
+                        </form>
+                </li>
+                <% }); %>
+        </ul>
+        <!-- Botón para regresar a la vista principal -->
+        <div class="back-to-home">
+            <a href="/dashboard" class="button">Regresar a la página principal</a>
+        </div>
+    </div>
+</body>
+
+</html>

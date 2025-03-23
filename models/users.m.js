@@ -160,7 +160,7 @@ class UsersModel {
   // Método para obtener los hábitos de un usuario
   async getUserHabits(userId) {
     const query = `
-      SELECT h.* 
+      SELECT h.*, uh.id AS relationId
       FROM habits h
       JOIN user_habits uh ON h.id = uh.habit_id
       WHERE uh.user_id = ?
