@@ -9,15 +9,24 @@
 </head>
 
 <body>
+  <header>
+    <h1>Gestión del Tiempo</h1>
+    <nav>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/auth/logout">Cerrar sesión</a>
+    </nav>
+  </header>
+
   <div class="container">
     <h1>Lista de Proyectos</h1>
     <a href="/projects/new" class="button">Crear Nuevo Proyecto</a>
     <ul>
-      <% projects.forEach(project => { %>
+      <% projects.forEach(project=> { %>
         <li>
           <strong>
             <%= project.name %>:
-          </strong> <%= project.description %>
+          </strong>
+          <%= project.description %>
             <br>
             <a href="/projects/<%= project.id %>" class="button">Ver Detalles</a>
             <a href="/projects/<%= project.id %>/edit" class="button">Editar</a>
@@ -25,7 +34,7 @@
               <button type="submit" class="delete">Eliminar</button>
             </form>
         </li>
-      <% }); %>
+        <% }); %>
     </ul>
     <!-- Botón para regresar a la vista principal -->
     <div class="back-to-home">

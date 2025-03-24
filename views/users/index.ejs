@@ -9,6 +9,14 @@
 </head>
 
 <body>
+    <header>
+        <h1>Gestión del Tiempo</h1>
+        <nav>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/auth/logout">Cerrar sesión</a>
+        </nav>
+    </header>
+
     <div class="container">
         <h1>Lista de Usuarios</h1>
         <a href="/users/new" class="button">Crear Nuevo Usuario</a>
@@ -19,13 +27,13 @@
                         <%= user.username %>:
                     </strong>
                     <%= user.name %> (Rol: <%= user.role %>)
-                    <br>
-                    <a href="/users/<%= user.id %>/edit" class="button">Editar</a>
-                    <form action="/users/<%= user.id %>?_method=DELETE" method="POST" style="display:inline;">
-                        <button type="submit" class="delete">Eliminar</button>
-                    </form>
+                            <br>
+                            <a href="/users/<%= user.id %>/edit" class="button">Editar</a>
+                            <form action="/users/<%= user.id %>?_method=DELETE" method="POST" style="display:inline;">
+                                <button type="submit" class="delete">Eliminar</button>
+                            </form>
                 </li>
-            <% }); %>
+                <% }); %>
         </ul>
         <a href="/dashboard" class="button">Volver al Dashboard</a>
     </div>

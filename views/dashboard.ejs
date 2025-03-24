@@ -12,7 +12,6 @@
   <header>
     <h1>Gestión del Tiempo</h1>
     <nav>
-      <a href="/">Inicio</a>
       <a href="/dashboard">Dashboard</a>
       <a href="/auth/logout">Cerrar sesión</a> <!-- Mostrar solo si el usuario está autenticado -->
     </nav>
@@ -21,7 +20,8 @@
   <div class="container">
     <!-- Título principal -->
     <h1>Dashboard</h1>
-    <p class="subtitle">Bienvenido, <%= user.username %>. Aquí puedes gestionar tus actividades y categorías.</p>
+    <p class="subtitle">Bienvenido, <%= user.username %>. Aquí puedes gestionar tus actividades, categorías, hábitos y
+        proyectos.</p>
 
     <!-- Botones de navegación -->
     <div class="actions">

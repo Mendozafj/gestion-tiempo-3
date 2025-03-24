@@ -9,6 +9,14 @@
 </head>
 
 <body>
+    <header>
+        <h1>Gestión del Tiempo</h1>
+        <nav>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/auth/logout">Cerrar sesión</a>
+        </nav>
+    </header>
+
     <div class="container">
         <h1>Agregar Actividad a Hábito</h1>
         <form action="/habits/<%= habit.id %>/activities" method="POST">

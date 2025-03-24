@@ -9,17 +9,24 @@
 </head>
 
 <body>
+  <header>
+    <h1>Gestión del Tiempo</h1>
+    <nav>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/auth/logout">Cerrar sesión</a>
+    </nav>
+  </header>
+
   <div class="container">
     <h1>Editar Actividad Realizada</h1>
     <form action="/projects/<%= projectId %>/activity-logs/<%= activityLogId %>?_method=PUT" method="POST">
       <label for="startTime">Fecha y Hora de Inicio:</label>
-      <input type="datetime-local" id="startTime" name="startTime" 
-             value="<%= activityLog.start_time && !isNaN(new Date(activityLog.start_time).getTime()) ? new Date(activityLog.start_time).toISOString().slice(0, 16) : '' %>" 
-             >
+      <input type="datetime-local" id="startTime" name="startTime"
+        value="<%= activityLog.start_time && !isNaN(new Date(activityLog.start_time).getTime()) ? new Date(activityLog.start_time).toISOString().slice(0, 16) : '' %>">
       <br>
       <label for="endTime">Fecha y Hora de Finalización:</label>
-      <input type="datetime-local" id="endTime" name="endTime" 
-             value="<%= activityLog.end_time && !isNaN(new Date(activityLog.end_time).getTime()) ? new Date(activityLog.end_time).toISOString().slice(0, 16) : '' %>">
+      <input type="datetime-local" id="endTime" name="endTime"
+        value="<%= activityLog.end_time && !isNaN(new Date(activityLog.end_time).getTime()) ? new Date(activityLog.end_time).toISOString().slice(0, 16) : '' %>">
       <br>
       <button type="submit">Guardar Cambios</button>
     </form>

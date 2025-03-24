@@ -9,6 +9,14 @@
 </head>
 
 <body>
+  <header>
+    <h1>Gestión del Tiempo</h1>
+    <nav>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/auth/logout">Cerrar sesión</a>
+    </nav>
+  </header>
+
   <div class="container">
     <h1>Editar Proyecto</h1>
     <form action="/projects/<%= project.id %>?_method=PUT" method="POST">

@@ -13,15 +13,6 @@
 <body>
   <header>
     <h1>Gestión del Tiempo</h1>
-    <nav>
-      <a href="/">Inicio</a>
-      <% if (user) { %>
-        <a href="/auth/logout">Cerrar sesión</a> <!-- Mostrar solo si el usuario está autenticado -->
-        <% } else { %>
-          <a href="/auth/login">Iniciar sesión</a> <!-- Mostrar solo si el usuario no está autenticado -->
-          <a href="/auth/register">Registrarse</a> <!-- Mostrar solo si el usuario no está autenticado -->
-          <% } %>
-    </nav>
   </header>
 
   <div class="container">

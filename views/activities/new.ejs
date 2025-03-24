@@ -9,6 +9,14 @@
 </head>
 
 <body>
+  <header>
+    <h1>Gestión del Tiempo</h1>
+    <nav>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/auth/logout">Cerrar sesión</a>
+    </nav>
+  </header>
+
   <div class="container">
     <h1>Crear Nueva Actividad</h1>
     <form action="/activities" method="POST">
@@ -21,9 +29,11 @@
       <!-- Selector de categorías -->
       <label for="categoryId">Categoría:</label>
       <select id="categoryId" name="categoryId" required>
-        <% categories.forEach(category => { %>
-          <option value="<%= category.id %>"><%= category.name %></option>
-        <% }); %>
+        <% categories.forEach(category=> { %>
+          <option value="<%= category.id %>">
+            <%= category.name %>
+          </option>
+          <% }); %>
       </select>
       <br>
       <button type="submit">Crear Actividad</button>
