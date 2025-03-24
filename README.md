@@ -32,11 +32,7 @@ cd gestion-tiempo-3
 ```
 npm install
 ```
-- **4.** Ejecuta el script de migración para desplegar la base de datos:
-```
-npm run migrate
-```
-- **5.**  Configura las variables de entorno:
+- **4.**  Configura las variables de entorno:
 Crea un archivo .env en la raíz del proyecto y agrega las siguientes variables:
 ```
 DB_HOST=localhost
@@ -44,6 +40,10 @@ DB_USER=tu_usuario_mysql
 DB_PASSWORD=tu_contraseña_mysql
 DB_DATABASE=gestion_tiempo
 JWT_SECRET=tu_clave_secreta_JWT
+```
+- **5.** Ejecuta el script de migración para desplegar la base de datos:
+```
+npm run migrate
 ```
 
 ## Uso
