@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/auth.c');
 const usersController = require('../controllers/users.c');
-const { authenticate, authorize, redirectIfAuthenticated } = require('../middleware/auth');
+const { redirectIfAuthenticated } = require('../middleware/auth');
 
 // Ruta para mostrar el formulario de login
 router.get('/login', redirectIfAuthenticated, (req, res) => {
@@ -29,7 +29,7 @@ router.post('/login', async (req, res) => {
     // Personalizar mensajes de error según el tipo de error
     if (error && error.message) {
       message = error.message;
-    } 
+    }
 
     // Renderizar la vista de login con el mensaje de error
     res.render('auth/login', {
@@ -71,10 +71,6 @@ router.get('/logout', (req, res) => {
 
   // Redirigir al usuario a la página de inicio de sesión
   res.redirect('/auth/login');
-});
-
-router.get('/', authenticate, authorize(['admin']), async (req, res) => {
-  res.send("Ruta de prueba: Acceso permitido")
 });
 
 module.exports = router;

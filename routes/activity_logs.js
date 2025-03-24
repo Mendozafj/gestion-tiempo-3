@@ -2,9 +2,10 @@ var express = require('express');
 var router = express.Router();
 var activityLogsController = require("../controllers/activity_logs.c");
 var activitiesController = require("../controllers/activities.c");
+const { authenticate, authorize } = require('../middleware/auth');
 
 /* POST registrar un registro de actividad */
-router.post('/', async (req, res) => {
+router.post('/', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await activityLogsController.register(req.body);
     if (result.error) {
@@ -17,7 +18,7 @@ router.post('/', async (req, res) => {
 });
 
 /* GET mostrar todos los registros de actividad */
-router.get('/', async (req, res) => {
+router.get('/', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const activityLogs = await activityLogsController.show();
     res.status(200).send(activityLogs);
@@ -27,7 +28,7 @@ router.get('/', async (req, res) => {
 });
 
 // Mostrar actividades abiertas (sin fecha de finalización)
-router.get('/open-activities', async (req, res) => {
+router.get('/open-activities', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const openActivities = await activityLogsController.getOpenActivities();
 
@@ -50,7 +51,7 @@ router.get('/open-activities', async (req, res) => {
 });
 
 /* GET mostrar un registro de actividad por su ID */
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const activityLog = await activityLogsController.showByID(req.params.id);
     if (!activityLog) {
@@ -63,7 +64,7 @@ router.get('/:id', async (req, res) => {
 });
 
 /* GET mostrar registros de actividad por usuario */
-router.get('/user/:user_id', async (req, res) => {
+router.get('/user/:user_id', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const activityLogs = await activityLogsController.showByUser(req.params.user_id);
     res.status(200).send(activityLogs);
@@ -73,7 +74,7 @@ router.get('/user/:user_id', async (req, res) => {
 });
 
 /* GET mostrar registros de actividad por actividad */
-router.get('/activity/:activity_id', async (req, res) => {
+router.get('/activity/:activity_id', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const activityLogs = await activityLogsController.showByActivity(req.params.activity_id);
     res.status(200).send(activityLogs);
@@ -83,7 +84,7 @@ router.get('/activity/:activity_id', async (req, res) => {
 });
 
 /* PUT editar un registro de actividad */
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await activityLogsController.update(req.params.id, req.body);
     if (result.error) {
@@ -96,7 +97,7 @@ router.put('/:id', async (req, res) => {
 });
 
 /* DELETE eliminar un registro de actividad */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await activityLogsController.delete(req.params.id);
     if (result.error) {
@@ -109,7 +110,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 // Mostrar las últimas 5 actividades realizadas por un usuario
-router.get('/users/:userId/last-activities', async (req, res) => {
+router.get('/users/:userId/last-activities', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const activities = await activityLogsController.getLastActivitiesByUser(req.params.userId);
     res.status(200).send(activities);
@@ -119,7 +120,7 @@ router.get('/users/:userId/last-activities', async (req, res) => {
 });
 
 // Buscar actividades realizadas por proyecto
-router.get('/projects/:projectId/activities', async (req, res) => {
+router.get('/projects/:projectId/activities', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const activities = await activityLogsController.getActivitiesByProject(req.params.projectId);
     res.status(200).send(activities);
@@ -129,7 +130,7 @@ router.get('/projects/:projectId/activities', async (req, res) => {
 });
 
 // Mostrar actividades realizadas de un hábito en específico por rango de fecha
-router.get('/habits/:habitId/activities', async (req, res) => {
+router.get('/habits/:habitId/activities', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const { startDate, endDate } = req.query; // Obtener las fechas del query string
     const activities = await activityLogsController.getActivitiesByHabitAndDateRange(
@@ -144,7 +145,7 @@ router.get('/habits/:habitId/activities', async (req, res) => {
 });
 
 // Buscar actividades realizadas por nombre de la actividad
-router.get('/activities/search', async (req, res) => {
+router.get('/activities/search', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const { name } = req.query; // Obtener el nombre de la actividad del query string
     if (!name) {

@@ -5,10 +5,10 @@ var usersController = require("../controllers/users.c");
 var activitiesController = require("../controllers/activities.c");
 var activityLogsController = require("../controllers/activity_logs.c");
 var activityLogsModel = require("../models/activity_logs.m");
-const { authenticate } = require('../middleware/auth');
+const { authenticate, authorize } = require('../middleware/auth');
 
 /* POST registrar proyectos */
-router.post('/', authenticate, async (req, res) => {
+router.post('/', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const userId = req.user.id; // Obtener el ID del usuario autenticado
     const result = await projectsController.register({ ...req.body, userId }); // Pasar el userId al controlador
@@ -37,7 +37,7 @@ router.post('/', authenticate, async (req, res) => {
 });
 
 /* GET mostrar proyectos. */
-router.get('/all', async (req, res) => {
+router.get('/all', authenticate, authorize(['admin']), async (req, res) => {
   try {
     const projects = await projectsController.show();
     res.status(200).render('projects', { projects });  // Renderiza la vista 'projects.ejs'
@@ -52,7 +52,7 @@ router.get('/all', async (req, res) => {
 });
 
 /* GET mostrar proyectos del usuario autenticado */
-router.get('/', authenticate, async (req, res) => {
+router.get('/', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const userId = req.user.id; // Obtener el ID del usuario autenticado
     const projects = await usersController.getUserProjects(userId);
@@ -68,12 +68,12 @@ router.get('/', authenticate, async (req, res) => {
 });
 
 // Mostrar formulario para crear un nuevo proyecto
-router.get('/new', authenticate, (req, res) => {
+router.get('/new', authenticate, authorize(['admin', 'user']), (req, res) => {
   res.render('projects/new');
 });
 
 // Mostrar formulario para editar un proyecto
-router.get('/:id/edit', authenticate, async (req, res) => {
+router.get('/:id/edit', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const project = await projectsController.showByID(req.params.id);
     if (!project) {
@@ -96,7 +96,7 @@ router.get('/:id/edit', authenticate, async (req, res) => {
 });
 
 // Mostrar formulario para editar un registro de actividad realizada
-router.get('/:projectId/activity-logs/:activityLogId/edit', authenticate, async (req, res) => {
+router.get('/:projectId/activity-logs/:activityLogId/edit', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const projectId = req.params.projectId;
     const activityLogId = req.params.activityLogId;
@@ -148,7 +148,7 @@ router.get('/time-used', async (req, res) => {
 });
 
 // Mostrar detalles de un proyecto por id y sus actividades
-router.get('/:id', authenticate, async (req, res) => {
+router.get('/:id', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const project = await projectsController.showByID(req.params.id);
     if (!project) {
@@ -178,7 +178,7 @@ router.get('/:id', authenticate, async (req, res) => {
 });
 
 /* PUT editar proyecto */
-router.put('/:id', authenticate, async (req, res) => {
+router.put('/:id', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await projectsController.update(req.params.id, req.body);
     if (result.error) {
@@ -206,7 +206,7 @@ router.put('/:id', authenticate, async (req, res) => {
 });
 
 /* DELETE eliminar proyecto */
-router.delete('/:id', authenticate, async (req, res) => {
+router.delete('/:id', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await projectsController.delete(req.params.id);
     if (result.error) {
@@ -234,7 +234,7 @@ router.delete('/:id', authenticate, async (req, res) => {
 });
 
 // Agregar actividad realizada a un proyecto
-router.post('/:projectId/activity-logs', authenticate, async (req, res) => {
+router.post('/:projectId/activity-logs', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const { activityId, startTime, endTime } = req.body;
     const projectId = req.params.projectId;
@@ -271,7 +271,7 @@ router.post('/:projectId/activity-logs', authenticate, async (req, res) => {
 });
 
 // Obtener las actividades realizadas de un proyecto
-router.get('/:projectId/activity-logs', async (req, res) => {
+router.get('/:projectId/activity-logs', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const activityLogs = await projectsController.getProjectActivityLogs(req.params.projectId);
     res.status(200).send(activityLogs);
@@ -281,7 +281,7 @@ router.get('/:projectId/activity-logs', async (req, res) => {
 });
 
 // Eliminar la relación entre un proyecto y una actividad realizada (Quitar una actividad del proyecto)
-router.delete('/:projectId/activity-logs/:relationId', authenticate, async (req, res) => {
+router.delete('/:projectId/activity-logs/:relationId', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await projectsController.removeActivityLogFromProject(req.params.relationId);
     if (result.error) {
@@ -308,7 +308,8 @@ router.delete('/:projectId/activity-logs/:relationId', authenticate, async (req,
   }
 });
 
-router.put('/:projectId/activity-logs/:activityLogId', authenticate, async (req, res) => {
+// Editar la relación entre un proyecto y una actividad realizada (Editar una actividad del proyecto)
+router.put('/:projectId/activity-logs/:activityLogId', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const projectId = req.params.projectId;
     const activityLogId = req.params.activityLogId;

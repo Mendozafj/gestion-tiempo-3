@@ -3,10 +3,10 @@ var router = express.Router();
 var activitiesController = require("../controllers/activities.c");
 var categoriesController = require("../controllers/categories.c");
 var activityLogsController = require("../controllers/activity_logs.c");
-const { authenticate } = require('../middleware/auth');
+const { authenticate, authorize } = require('../middleware/auth');
 
 /* POST registrar actividades */
-router.post('/', async (req, res) => {
+router.post('/', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await activitiesController.register(req.body);
     if (result.error) {
@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
 });
 
 /* GET mostrar actividades. */
-router.get('/', authenticate, async (req, res) => {
+router.get('/', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const activities = await activitiesController.show();
     const lastActivities = await activityLogsController.getLastActivitiesByUser(req.user.id);
@@ -55,7 +55,7 @@ router.get('/', authenticate, async (req, res) => {
 });
 
 // Mostrar formulario para crear una actividad
-router.get('/new', async (req, res) => {
+router.get('/new', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const categories = await categoriesController.show(); // Obtener la lista de categorías
     res.render('activities/new', { categories }); // Pasar las categorías a la vista
@@ -65,7 +65,7 @@ router.get('/new', async (req, res) => {
 });
 
 // Mostrar formulario para editar una actividad
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const activity = await activitiesController.showByID(req.params.id);
     if (!activity) {
@@ -80,7 +80,7 @@ router.get('/:id/edit', async (req, res) => {
 });
 
 /* GET mostrar actividad por id */
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const activity = await activitiesController.showByID(req.params.id);
     if (!activity) {
@@ -93,7 +93,7 @@ router.get('/:id', async (req, res) => {
 });
 
 /* PUT editar actividad */
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await activitiesController.update(req.params.id, req.body);
     if (result.error) {
@@ -121,7 +121,7 @@ router.put('/:id', async (req, res) => {
 });
 
 /* DELETE eliminar actividad */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await activitiesController.delete(req.params.id);
     if (result.error) {
@@ -149,7 +149,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 // Rutas para manejar la relación entre actividades y categorías
-router.post('/:activityId/categories/:categoryId', async (req, res) => {
+router.post('/:activityId/categories/:categoryId', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await activitiesController.addCategory(req.params.activityId, req.params.categoryId);
     if (result.error) {
@@ -162,7 +162,7 @@ router.post('/:activityId/categories/:categoryId', async (req, res) => {
 });
 
 // Rutas para eliminar la relación entre actividades y categorías
-router.delete('/categories/:relationId', async (req, res) => {
+router.delete('/categories/:relationId', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await activitiesController.removeCategory(req.params.relationId);
     if (result.error) {
@@ -175,7 +175,7 @@ router.delete('/categories/:relationId', async (req, res) => {
 });
 
 // Rutas para obtener las categorías de una actividad
-router.get('/:activityId/categories', async (req, res) => {
+router.get('/:activityId/categories', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const categories = await activitiesController.getCategories(req.params.activityId);
     res.status(200).send(categories);
@@ -185,7 +185,7 @@ router.get('/:activityId/categories', async (req, res) => {
 });
 
 // Mostrar las actividades de una categoría determinada de un usuario dado
-router.get('/users/:userId/categories/:categoryId', async (req, res) => {
+router.get('/users/:userId/categories/:categoryId', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const activities = await activitiesController.getActivitiesByUserAndCategory(
       req.params.userId,

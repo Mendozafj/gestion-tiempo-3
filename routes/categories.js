@@ -2,10 +2,10 @@ var express = require('express');
 var router = express.Router();
 var categoriesController = require("../controllers/categories.c");
 var activitiesController = require("../controllers/activities.c");
-const { authenticate } = require('../middleware/auth');
+const { authenticate, authorize } = require('../middleware/auth');
 
 /* POST registrar categorías */
-router.post('/', async (req, res) => {
+router.post('/', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await categoriesController.register(req.body);
     if (result.error) {
@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
 });
 
 /* GET mostrar categorías. */
-router.get('/', async (req, res) => {
+router.get('/', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const categories = await categoriesController.show();
     res.status(200).render('categories/categories', { categories });  // Renderiza la vista 'categories.ejs'
@@ -43,12 +43,12 @@ router.get('/', async (req, res) => {
 });
 
 // Mostrar formulario para crear una categoría
-router.get('/new', (req, res) => {
+router.get('/new', authenticate, authorize(['admin', 'user']), (req, res) => {
   res.render('categories/new');
 });
 
 // Mostrar formulario para editar una categoría
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const category = await categoriesController.showByID(req.params.id);
     if (!category) {
@@ -78,7 +78,7 @@ router.get('/time-used', async (req, res) => {
 });
 
 /* GET mostrar categoría por id */
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const category = await categoriesController.showByID(req.params.id);
     if (!category) {
@@ -91,7 +91,7 @@ router.get('/:id', async (req, res) => {
 });
 
 /* PUT editar categoría */
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await categoriesController.update(req.params.id, req.body);
     if (result.error) {
@@ -119,7 +119,7 @@ router.put('/:id', async (req, res) => {
 });
 
 /* DELETE eliminar categoría */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await categoriesController.delete(req.params.id);
     if (result.error) {
@@ -147,7 +147,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 // Mostrar actividades de una categoría específica para el usuario autenticado
-router.get('/:categoryId/activities', authenticate, async (req, res) => {
+router.get('/:categoryId/activities', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const category = await categoriesController.showByID(req.params.categoryId);
     if (!category) {

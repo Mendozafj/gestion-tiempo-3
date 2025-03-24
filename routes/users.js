@@ -52,7 +52,7 @@ router.get('/', authenticate, authorize(['admin']), async (req, res) => {
 });
 
 /* GET mostrar usuario por id */
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticate, authorize(['admin']), async (req, res) => {
   try {
     const user = await usersController.showByID(req.params.id);
     if (!user) {
@@ -65,7 +65,7 @@ router.get('/:id', async (req, res) => {
 });
 
 /* GET mostrar usuario por username */
-router.get('/username/:username', async (req, res) => {
+router.get('/username/:username', authenticate, authorize(['admin']), async (req, res) => {
   try {
     const user = await usersController.showByUsername(req.params.username);
     if (!user) {
@@ -127,6 +127,7 @@ router.get('/:id/edit', authenticate, authorize(['admin']), async (req, res) => 
     });
   }
 });
+
 /* DELETE eliminar usuario */
 router.delete('/:id', authenticate, authorize(['admin']), async (req, res) => {
   try {
@@ -156,7 +157,7 @@ router.delete('/:id', authenticate, authorize(['admin']), async (req, res) => {
 });
 
 // Relacionar un proyecto con un usuario
-router.post('/:userId/projects/:projectId', async (req, res) => {
+router.post('/:userId/projects/:projectId', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await usersController.addProjectToUser(req.params.userId, req.params.projectId);
     if (result.error) {
@@ -169,7 +170,7 @@ router.post('/:userId/projects/:projectId', async (req, res) => {
 });
 
 // Relacionar un hábito con un usuario
-router.post('/:userId/habits/:habitId', async (req, res) => {
+router.post('/:userId/habits/:habitId', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await usersController.addHabitToUser(req.params.userId, req.params.habitId);
     if (result.error) {
@@ -197,7 +198,7 @@ router.post('/:userId/habits/:habitId', async (req, res) => {
 });
 
 // Obtener los hábitos de un usuario
-router.get('/:userId/habits', async (req, res) => {
+router.get('/:userId/habits', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const habits = await usersController.getUserHabits(req.params.userId);
     res.status(200).render('users/habits', { userHabits: habits, userId: req.params.userId });
@@ -207,7 +208,7 @@ router.get('/:userId/habits', async (req, res) => {
 });
 
 // Obtener los proyectos de un usuario
-router.get('/:userId/projects', async (req, res) => {
+router.get('/:userId/projects', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const projects = await usersController.getUserProjects(req.params.userId);
     res.status(200).send(projects);
@@ -217,7 +218,7 @@ router.get('/:userId/projects', async (req, res) => {
 });
 
 // Obtener los hábitos de un usuario
-router.get('/:userId/habits', async (req, res) => {
+router.get('/:userId/habits', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const habits = await usersController.getUserHabits(req.params.userId);
     res.status(200).send(habits);
@@ -227,7 +228,7 @@ router.get('/:userId/habits', async (req, res) => {
 });
 
 // Eliminar la relación entre un proyecto y un usuario
-router.delete('/projects/:relationId', async (req, res) => {
+router.delete('/projects/:relationId', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await usersController.removeProjectFromUser(req.params.relationId);
     if (result.error) {
@@ -240,7 +241,7 @@ router.delete('/projects/:relationId', async (req, res) => {
 });
 
 // Eliminar la relación entre un hábito y un usuario
-router.delete('/habits/:relationId', authenticate, async (req, res) => {
+router.delete('/habits/:relationId', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await usersController.removeHabitFromUser(req.params.relationId);
     if (result.error) {

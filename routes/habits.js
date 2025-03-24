@@ -3,10 +3,10 @@ var router = express.Router();
 var habitsController = require("../controllers/habits.c");
 var activitiesController = require("../controllers/activities.c");
 var activityLogsController = require("../controllers/activity_logs.c");
-const { authenticate } = require('../middleware/auth');
+const { authenticate, authorize } = require('../middleware/auth');
 
 /* POST registrar hábitos */
-router.post('/', async (req, res) => {
+router.post('/', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await habitsController.register(req.body);
     if (result.error) {
@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
 });
 
 /* GET mostrar hábitos. */
-router.get('/', authenticate, async (req, res) => {
+router.get('/', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const habits = await habitsController.show();
     res.status(200).render('habits/habits', { habits, user: req.user });  // Renderiza la vista 'habits.ejs'
@@ -44,7 +44,7 @@ router.get('/', authenticate, async (req, res) => {
 });
 
 // Obtener los hábitos de un usuario
-router.get('/:userId/habits', authenticate, async (req, res) => {
+router.get('/:userId/habits', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const habits = await usersController.getUserHabits(req.params.userId);
     res.status(200).render('users/habits', { userHabits: habits, user: req.user });
@@ -54,12 +54,12 @@ router.get('/:userId/habits', authenticate, async (req, res) => {
 });
 
 // Mostrar formulario para crear un nuevo hábito
-router.get('/new', (req, res) => {
+router.get('/new', authenticate, authorize(['admin', 'user']), (req, res) => {
   res.render('habits/new');
 });
 
 // Mostrar formulario para editar un hábito
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const habit = await habitsController.showByID(req.params.id);
     if (!habit) {
@@ -72,7 +72,7 @@ router.get('/:id/edit', async (req, res) => {
 });
 
 // Mostrar los hábitos que no tienen actividades realizadas
-router.get('/habits-without-activities', authenticate, async (req, res) => {
+router.get('/habits-without-activities', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const habits = await habitsController.getHabitsWithoutActivities();
     res.status(200).render('habits/habits-without-activities', {
@@ -90,7 +90,7 @@ router.get('/habits-without-activities', authenticate, async (req, res) => {
 });
 
 /* GET mostrar hábito por id */
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const habit = await habitsController.showByID(req.params.id);
     if (!habit) {
@@ -105,7 +105,7 @@ router.get('/:id', async (req, res) => {
 });
 
 /* PUT editar hábito */
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await habitsController.update(req.params.id, req.body);
     if (result.error) {
@@ -133,7 +133,7 @@ router.put('/:id', async (req, res) => {
 });
 
 /* DELETE eliminar hábito */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await habitsController.delete(req.params.id);
     if (result.error) {
@@ -161,7 +161,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 /* POST agregar actividad a hábito */
-router.post('/:habitId/activities', async (req, res) => {
+router.post('/:habitId/activities', authenticate, authorize(['admin', 'user']), async (req, res) => {
   const { activityId } = req.body;
   const { habitId } = req.params;
 
@@ -193,7 +193,7 @@ router.post('/:habitId/activities', async (req, res) => {
 });
 
 // Mostrar formulario para agregar actividad a un hábito
-router.get('/:id/add-activity', async (req, res) => {
+router.get('/:id/add-activity', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const habit = await habitsController.showByID(req.params.id);
     const activities = await activitiesController.show(); // Asegúrate de tener un método para obtener todas las actividades
@@ -204,7 +204,7 @@ router.get('/:id/add-activity', async (req, res) => {
 });
 
 /* DELETE eliminar actividad de hábito */
-router.delete('/:habitId/activities/:relationId', async (req, res) => {
+router.delete('/:habitId/activities/:relationId', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const result = await habitsController.removeActivity(req.params.relationId);
     if (result.error) {
@@ -232,7 +232,7 @@ router.delete('/:habitId/activities/:relationId', async (req, res) => {
 });
 
 /* GET mostrar actividades de hábito */
-router.get('/:habitId/activities', async (req, res) => {
+router.get('/:habitId/activities', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const activities = await habitsController.getActivities(req.params.habitId);
     res.status(200).send(activities);
@@ -242,7 +242,7 @@ router.get('/:habitId/activities', async (req, res) => {
 });
 
 /* GET mostrar actividades de hábito por rango de fecha */
-router.get('/:habitId/activities-by-date', authenticate, async (req, res) => {
+router.get('/:habitId/activities-by-date', authenticate, authorize(['admin', 'user']), async (req, res) => {
   try {
     const { startDate, endDate } = req.query; // Obtener las fechas del query string
     const habit = await habitsController.showByID(req.params.habitId);
