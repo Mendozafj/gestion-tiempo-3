@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividades del Hábito por Rango de Fechas</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <div class="container">
+        <h1>Actividades del Hábito: <%= habit.name %>
+        </h1>
+        <p>
+            <%= habit.description %>
+        </p>
+
+        <h3>Actividades realizadas entre <%= startDate %> y <%= endDate %>
+        </h3>
+        <% if (activities.length> 0) { %>
+            <ul>
+                <% activities.forEach(activity=> { %>
+                    <li>
+                        <strong>
+                            <%= activity.activity_name %>
+                        </strong>
+                        <p>Categoría: <%= activity.category_name %>
+                        </p>
+                        <p>Fecha de inicio: <%= formatDate(activity.start_time) %>
+                        </p>
+                        <p>Fecha de fin: <%= formatDate(activity.end_time) %>
+                        </p>
+                    </li>
+                    <% }); %>
+            </ul>
+            <% } else { %>
+                <p>No se encontraron actividades para este hábito en el rango de fechas seleccionado.</p>
+                <% } %>
+
+                    <br>
+                    <a href="/habits/<%= habit.id %>" class="button">Volver a los detalles del hábito</a>
+    </div>
+</body>
+
+</html>

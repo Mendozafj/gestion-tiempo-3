@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividades de la Categoría</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <div class="container">
+        <h1>Actividades de la Categoría: <%= category.name %>
+        </h1>
+        <p>
+            <%= category.description %>
+        </p>
+
+        <% if (activities.length> 0) { %>
+            <ul>
+                <% activities.forEach(activity=> { %>
+                    <li>
+                        <strong>
+                            <%= activity.name %>
+                        </strong>
+                        <p>
+                            <%= activity.description %>
+                        </p>
+                        <p><strong>Fecha de inicio:</strong>
+                            <%= formatDate(activity.start_time) %>
+                        </p>
+                        <p><strong>Fecha de fin:</strong>
+                            <%= formatDate(activity.end_time) %>
+                        </p>
+                    </li>
+                    <% }); %>
+            </ul>
+            <% } else { %>
+                <p>No se encontraron actividades para esta categoría.</p>
+                <% } %>
+
+                    <br>
+                    <a href="/categories" class="button">Volver a la lista de categorías</a>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiempo Usado por Categoría</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <div class="container">
+        <h1>Tiempo Usado por Categoría</h1>
+
+        <% if (timeUsedByCategory.length> 0) { %>
+            <ul>
+                <% timeUsedByCategory.forEach(category=> { %>
+                    <li>
+                        <strong>
+                            <%= category.category_name %>
+                        </strong>
+                        <p>Tiempo total: <%= category.total_time %>
+                        </p>
+                    </li>
+                    <% }); %>
+            </ul>
+            <% } else { %>
+                <p>No hay datos disponibles.</p>
+                <% } %>
+
+                    <br>
+                    <a href="/" class="button">Volver al inicio</a>
+    </div>
+</body>
+
+</html>

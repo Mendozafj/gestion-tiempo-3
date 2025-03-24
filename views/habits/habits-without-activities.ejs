@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hábitos sin Actividades Realizadas</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <div class="container">
+        <h1>Hábitos sin Actividades Realizadas</h1>
+
+        <% if (habits.length> 0) { %>
+            <ul>
+                <% habits.forEach(habit=> { %>
+                    <li>
+                        <strong>
+                            <%= habit.name %>
+                        </strong>
+                        <p>
+                            <%= habit.description %>
+                        </p>
+                    </li>
+                    <% }); %>
+            </ul>
+            <% } else { %>
+                <p>Todos los hábitos tienen actividades realizadas.</p>
+                <% } %>
+
+                    <br>
+                    <a href="/habits" class="button">Volver a la lista de hábitos</a>
+    </div>
+</body>
+
+</html>

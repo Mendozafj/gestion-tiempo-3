@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var categoriesController = require("../controllers/categories.c");
+var activitiesController = require("../controllers/activities.c");
+const { authenticate } = require('../middleware/auth');
 
 /* POST registrar categorías */
 router.post('/', async (req, res) => {
@@ -62,9 +64,16 @@ router.get('/:id/edit', async (req, res) => {
 router.get('/time-used', async (req, res) => {
   try {
     const timeUsedByCategory = await categoriesController.getTimeUsedByCategory();
-    res.status(200).send(timeUsedByCategory);
+    res.status(200).render('categories/time-used-by-category', {
+      timeUsedByCategory: timeUsedByCategory
+    });
   } catch (err) {
-    res.status(500).send(`Error al obtener el tiempo usado por categoría: ${err}`);
+    res.status(500).render('message', {
+      message: 'Error',
+      messageType: 'error',
+      details: `Error al obtener el tiempo usado por categoría: ${err.message}`,
+      redirectUrl: '/'
+    });
   }
 });
 
@@ -132,6 +141,41 @@ router.delete('/:id', async (req, res) => {
       message: 'Error',
       messageType: 'error',
       details: `No se pudo eliminar la categoría: ${error.message}`,
+      redirectUrl: '/categories'
+    });
+  }
+});
+
+// Mostrar actividades de una categoría específica para el usuario autenticado
+router.get('/:categoryId/activities', authenticate, async (req, res) => {
+  try {
+    const category = await categoriesController.showByID(req.params.categoryId);
+    if (!category) {
+      return res.status(404).render('message', {
+        message: 'Error',
+        messageType: 'error',
+        details: 'Categoría no encontrada.',
+        redirectUrl: '/categories'
+      });
+    }
+
+    // Obtener las actividades de la categoría para el usuario autenticado
+    const activities = await activitiesController.getActivitiesByUserAndCategory(
+      req.user.id, // ID del usuario autenticado
+      req.params.categoryId // ID de la categoría
+    );
+
+    // Renderizar la vista con los datos
+    res.status(200).render('categories/category-activities', {
+      category: category,
+      activities: activities,
+      user: req.user, // Pasar el usuario autenticado
+    });
+  } catch (error) {
+    res.status(500).render('message', {
+      message: 'Error',
+      messageType: 'error',
+      details: `Error al obtener actividades: ${error.message}`,
       redirectUrl: '/categories'
     });
   }

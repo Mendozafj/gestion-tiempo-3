@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var activityLogsController = require("../controllers/activity_logs.c");
+var activitiesController = require("../controllers/activities.c");
 
 /* POST registrar un registro de actividad */
 router.post('/', async (req, res) => {
@@ -29,9 +30,22 @@ router.get('/', async (req, res) => {
 router.get('/open-activities', async (req, res) => {
   try {
     const openActivities = await activityLogsController.getOpenActivities();
-    res.status(200).send(openActivities);
+
+    // Obtener todas las actividades para mostrarlas junto con las actividades abiertas
+    const activities = await activitiesController.show();
+
+    res.status(200).render('activities/open-activities', {
+      activities: activities,
+      openActivities: openActivities,
+      user: req.user
+    });
   } catch (err) {
-    res.status(500).send(`Error al obtener actividades abiertas: ${err}`);
+    res.status(500).render('message', {
+      message: 'Error',
+      messageType: 'error',
+      details: `Error al obtener actividades abiertas: ${err.message}`,
+      redirectUrl: '/activities'
+    });
   }
 });
 
@@ -134,13 +148,28 @@ router.get('/activities/search', async (req, res) => {
   try {
     const { name } = req.query; // Obtener el nombre de la actividad del query string
     if (!name) {
-      return res.status(400).send("Debes proporcionar un nombre de actividad");
+      return res.status(400).render('message', {
+        message: 'Error',
+        messageType: 'error',
+        details: 'Debes proporcionar un nombre de actividad.',
+        redirectUrl: '/activities'
+      });
     }
 
     const activities = await activityLogsController.getActivitiesByName(name);
-    res.status(200).send(activities);
+
+    res.status(200).render('activities/search-results', {
+      activities: activities,
+      searchQuery: name,
+      user: req.user
+    });
   } catch (err) {
-    res.status(500).send(`Error al buscar actividades por nombre: ${err}`);
+    res.status(500).render('message', {
+      message: 'Error',
+      messageType: 'error',
+      details: `Error al buscar actividades por nombre: ${err.message}`,
+      redirectUrl: '/activities'
+    });
   }
 });
 

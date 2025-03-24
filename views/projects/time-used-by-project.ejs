@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiempo Usado por Proyecto</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <div class="container">
+        <h1>Tiempo Usado por Proyecto</h1>
+
+        <% if (timeUsedByProject.length> 0) { %>
+            <ul>
+                <% timeUsedByProject.forEach(project=> { %>
+                    <li>
+                        <strong>
+                            <%= project.project_name %>
+                        </strong>
+                        <p>Tiempo total: <%= project.total_time %>
+                        </p>
+                    </li>
+                    <% }); %>
+            </ul>
+            <% } else { %>
+                <p>No hay datos disponibles.</p>
+                <% } %>
+
+                    <br>
+                    <a href="/" class="button">Volver al inicio</a>
+    </div>
+</body>
+
+</html>

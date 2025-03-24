@@ -27,16 +27,18 @@
               (<%= activity.category_name %>):
           </strong>
           <%= activity.activity_description %>.
-          <strong>Inicio:</strong> <%= formatDate(activity.start_time) %> -
-            <strong>Fin:</strong> <%= formatDate(activity.end_time) %>
-              <!-- Botón para editar la actividad realizada -->
-              <a href="/projects/<%= project.id %>/activity-logs/<%= activity.project_activity_log_id %>/edit"
-                class="button">Editar</a>
-              <form
-                action="/projects/<%= project.id %>/activity-logs/<%= activity.project_activity_log_id %>?_method=DELETE"
-                method="POST" style="display:inline;">
-                <button type="submit" class="delete">Eliminar</button>
-              </form>
+            <strong>Inicio:</strong>
+            <%= formatDate(activity.start_time) %> -
+              <strong>Fin:</strong>
+              <%= formatDate(activity.end_time) %>
+                <!-- Botón para editar la actividad realizada -->
+                <a href="/projects/<%= project.id %>/activity-logs/<%= activity.project_activity_log_id %>/edit"
+                  class="button">Editar</a>
+                <form
+                  action="/projects/<%= project.id %>/activity-logs/<%= activity.project_activity_log_id %>?_method=DELETE"
+                  method="POST" style="display:inline;">
+                  <button type="submit" class="delete">Eliminar</button>
+                </form>
         </li>
         <% }); %>
     </ul>
@@ -56,7 +58,7 @@
       </select>
       <br>
       <label for="startTime">Fecha y Hora de Inicio:</label>
-      <input type="datetime-local" id="startTime" name="startTime">
+      <input type="datetime-local" id="startTime" name="startTime" required>
       <br>
       <label for="endTime">Fecha y Hora de Finalización:</label>
       <input type="datetime-local" id="endTime" name="endTime">

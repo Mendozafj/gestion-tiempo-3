@@ -158,12 +158,12 @@ class ActivitiesModel {
   // Obtener las actividades de una categoría determinada de un usuario dado
   async getActivitiesByUserAndCategory(userId, categoryId) {
     const query = `
-        SELECT a.* 
+        SELECT a.*, al.start_time, al.end_time
         FROM activities a
         JOIN category_activities ca ON a.id = ca.activity_id
         JOIN activity_logs al ON a.id = al.activity_id
         WHERE ca.category_id = ? AND al.user_id = ?
-      `;
+    `;
     try {
       const [rows] = await pool.query(query, [categoryId, userId]);
       return rows;

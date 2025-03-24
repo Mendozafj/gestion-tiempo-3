@@ -119,14 +119,16 @@ class HabitsModel {
     return rows.length > 0 ? rows[0] : null;
   }
 
+  // Obtener las actividades de un hábito
   async getActivities(habitId) {
     const query = `
-        SELECT a.*, ha.id AS relationId 
-        FROM activities a 
-        JOIN habit_activities ha ON a.id = ha.activity_id 
-        WHERE ha.habit_id = ?
-    `;
-
+      SELECT a.*, c.name AS category_name
+      FROM activities a
+      JOIN habit_activities ha ON a.id = ha.activity_id
+      JOIN category_activities ca ON a.id = ca.activity_id
+      JOIN categories c ON ca.category_id = c.id
+      WHERE ha.habit_id = ?
+  `;
     try {
       const [rows] = await pool.query(query, [habitId]);
       return rows;

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividades Abiertas</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <div class="container">
+        <h1>Actividades Abiertas</h1>
+
+        <!-- Mostrar actividades abiertas -->
+        <% if (openActivities.length> 0) { %>
+            <ul>
+                <% openActivities.forEach(activity=> { %>
+                    <li>
+                        <strong>
+                            <%= activity.activity_name %>
+                        </strong>
+                        <p>Categoría: <%= activity.category_name %>
+                        </p>
+                        <p>Fecha de inicio: <%= formatDate(activity.start_time) %>
+                        </p>
+                    </li>
+                    <% }); %>
+            </ul>
+            <% } else { %>
+                <p>No hay actividades abiertas.</p>
+                <% } %>
+
+                    <br>
+                    <a href="/activities" class="button">Volver a la lista de actividades</a>
+    </div>
+</body>
+
+</html>

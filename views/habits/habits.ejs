@@ -14,6 +14,9 @@
     <a href="/habits/new" class="button">Crear Nuevo Hábito</a>
     <!-- Botón para ver los hábitos del usuario actual -->
     <a href="/users/<%= user.id %>/habits" class="button">Ver mis hábitos</a>
+    <!-- Botón para ver los hábitos sin actividades realizadas -->
+    <a href="/habits/habits-without-activities" class="button">Ver hábitos sin actividades realizadas</a>
+
     <ul>
       <% habits.forEach(habit=> { %>
         <li>
@@ -35,6 +38,7 @@
         </li>
         <% }); %>
     </ul>
+
     <!-- Botón para regresar a la vista principal -->
     <div class="back-to-home">
       <a href="/dashboard" class="button">Regresar a la página principal</a>

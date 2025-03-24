@@ -18,15 +18,35 @@
             <%= habit.description %>
         </p>
 
+        <!-- Formulario para filtrar por rango de fechas -->
+        <h3>Filtrar actividades por rango de fechas</h3>
+        <form action="/habits/<%= habit.id %>/activities-by-date" method="GET">
+            <label for="startDate">Fecha de inicio:</label>
+            <input type="date" id="startDate" name="startDate" required>
+            <br>
+            <label for="endDate">Fecha de fin:</label>
+            <input type="date" id="endDate" name="endDate" required>
+            <br>
+            <button type="submit">Filtrar</button>
+        </form>
+
         <h3>Actividades asociadas:</h3>
         <ul>
             <% activities.forEach(activity=> { %>
                 <li>
-                    <%= activity.name %>
-                        <form action="/habits/<%= habit.id %>/activities/<%= activity.relationId %>?_method=DELETE" method="POST"
-                            style="display:inline;">
-                            <button type="submit" class="delete">Eliminar</button>
-                        </form>
+                    <strong>
+                        <%= activity.name %>
+                    </strong>
+                    <p>
+                        <%= activity.description %>
+                    </p>
+                    <p><strong>Categoría:</strong>
+                        <%= activity.category_name %>
+                    </p>
+                    <form action="/habits/<%= habit.id %>/activities/<%= activity.relationId %>?_method=DELETE"
+                        method="POST" style="display:inline;">
+                        <button type="submit" class="delete">Eliminar</button>
+                    </form>
                 </li>
                 <% }); %>
         </ul>

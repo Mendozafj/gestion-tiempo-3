@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var habitsController = require("../controllers/habits.c");
 var activitiesController = require("../controllers/activities.c");
+var activityLogsController = require("../controllers/activity_logs.c");
 const { authenticate } = require('../middleware/auth');
 
 /* POST registrar hábitos */
@@ -71,12 +72,20 @@ router.get('/:id/edit', async (req, res) => {
 });
 
 // Mostrar los hábitos que no tienen actividades realizadas
-router.get('/habits-without-activities', async (req, res) => {
+router.get('/habits-without-activities', authenticate, async (req, res) => {
   try {
     const habits = await habitsController.getHabitsWithoutActivities();
-    res.status(200).send(habits);
+    res.status(200).render('habits/habits-without-activities', {
+      habits: habits,
+      user: req.user
+    });
   } catch (err) {
-    res.status(500).send(`Error al obtener hábitos sin actividades realizadas: ${err}`);
+    res.status(500).render('message', {
+      message: 'Error',
+      messageType: 'error',
+      details: `Error al obtener hábitos sin actividades realizadas: ${err.message}`,
+      redirectUrl: '/habits'
+    });
   }
 });
 
@@ -229,6 +238,43 @@ router.get('/:habitId/activities', async (req, res) => {
     res.status(200).send(activities);
   } catch (err) {
     res.status(500).send(`Error al mostrar actividades: ${err}`);
+  }
+});
+
+/* GET mostrar actividades de hábito por rango de fecha */
+router.get('/:habitId/activities-by-date', authenticate, async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query; // Obtener las fechas del query string
+    const habit = await habitsController.showByID(req.params.habitId);
+
+    if (!habit) {
+      return res.status(404).render('message', {
+        message: 'Error',
+        messageType: 'error',
+        details: 'Hábito no encontrado.',
+        redirectUrl: '/habits'
+      });
+    }
+
+    const activities = await activityLogsController.getActivitiesByHabitAndDateRange(
+      req.params.habitId,
+      startDate,
+      endDate
+    );
+
+    res.status(200).render('habits/activities-by-date', {
+      habit: habit,
+      activities: activities,
+      startDate: startDate,
+      endDate: endDate
+    });
+  } catch (err) {
+    res.status(500).render('message', {
+      message: 'Error',
+      messageType: 'error',
+      details: `Error al obtener actividades por hábito y rango de fecha: ${err.message}`,
+      redirectUrl: `/habits/${req.params.habitId}`
+    });
   }
 });
 

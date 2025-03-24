@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de Búsqueda</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <div class="container">
+        <h1>Resultados de Búsqueda</h1>
+        <p>Mostrando resultados para: <strong>
+                <%= searchQuery %>
+            </strong></p>
+
+        <% if (activities.length> 0) { %>
+            <ul>
+                <% activities.forEach(activity=> { %>
+                    <li>
+                        <strong>
+                            <%= activity.activity_name %>
+                        </strong>
+                        <p>Categoría: <%= activity.category_name %>
+                        </p>
+                        <p>Fecha de inicio: <%= formatDate(activity.start_time) %>
+                        </p>
+                        <p>Fecha de fin: <%= formatDate(activity.end_time) %>
+                        </p>
+                    </li>
+                    <% }); %>
+            </ul>
+            <% } else { %>
+                <p>No se encontraron actividades con ese nombre.</p>
+                <% } %>
+
+                    <br>
+                    <a href="/activities" class="button">Volver a la lista de actividades</a>
+    </div>
+</body>
+
+</html>

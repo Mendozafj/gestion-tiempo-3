@@ -134,9 +134,16 @@ router.get('/:projectId/activity-logs/:activityLogId/edit', authenticate, async 
 router.get('/time-used', async (req, res) => {
   try {
     const timeUsedByProject = await projectsController.getTimeUsedByProject();
-    res.status(200).send(timeUsedByProject);
+    res.status(200).render('projects/time-used-by-project', {
+      timeUsedByProject: timeUsedByProject
+    });
   } catch (err) {
-    res.status(500).send(`Error al obtener el tiempo usado por proyecto: ${err}`);
+    res.status(500).render('message', {
+      message: 'Error',
+      messageType: 'error',
+      details: `Error al obtener el tiempo usado por proyecto: ${err.message}`,
+      redirectUrl: '/'
+    });
   }
 });
 

@@ -17,10 +17,10 @@
       <a href="/">Inicio</a>
       <% if (user) { %>
         <a href="/auth/logout">Cerrar sesión</a> <!-- Mostrar solo si el usuario está autenticado -->
-      <% } else { %>
-        <a href="/auth/login">Iniciar sesión</a> <!-- Mostrar solo si el usuario no está autenticado -->
-        <a href="/auth/register">Registrarse</a> <!-- Mostrar solo si el usuario no está autenticado -->
-      <% } %>
+        <% } else { %>
+          <a href="/auth/login">Iniciar sesión</a> <!-- Mostrar solo si el usuario no está autenticado -->
+          <a href="/auth/register">Registrarse</a> <!-- Mostrar solo si el usuario no está autenticado -->
+          <% } %>
     </nav>
   </header>
 
@@ -43,11 +43,14 @@
       <% if (user) { %>
         <!-- Opciones para usuarios autenticados -->
         <a href="/dashboard" class="button">Ir al Dashboard</a>
-      <% } else { %>
-        <!-- Opciones para usuarios no autenticados -->
-        <a href="/auth/login" class="button">Iniciar Sesión</a>
-        <a href="/auth/register" class="button">Registrarse</a>
-      <% } %>
+        <% } else { %>
+          <!-- Opciones para usuarios no autenticados -->
+          <a href="/auth/login" class="button">Iniciar Sesión</a>
+          <a href="/auth/register" class="button">Registrarse</a>
+          <% } %>
+            <!-- Enlaces para ver el tiempo usado por categoría y proyecto -->
+            <a href="/categories/time-used" class="button">Tiempo por Categoría</a>
+            <a href="/projects/time-used" class="button">Tiempo por Proyecto</a>
     </div>
 
     <!-- Mensaje adicional -->
@@ -55,9 +58,9 @@
       <p>
         <% if (user) { %>
           ¡Bienvenido de nuevo, <%= user.username %>! Haz clic en "Ir al Dashboard" para comenzar.
-        <% } else { %>
-          Selecciona una opción para comenzar.
-        <% } %>
+            <% } else { %>
+              Selecciona una opción para comenzar.
+              <% } %>
       </p>
     </div>
   </div>

@@ -12,6 +12,20 @@
   <div class="container">
     <h1>Lista de Actividades</h1>
     <a href="/activities/new" class="button">Crear Nueva Actividad</a>
+
+    <!-- Enlace para ver actividades abiertas -->
+    <a href="/activity-logs/open-activities" class="button">Ver actividades abiertas</a>
+
+    <!-- Formulario de búsqueda por nombre de actividad -->
+    <h2>Buscar actividades realizadas por nombre</h2>
+    <form action="/activity-logs/activities/search" method="GET">
+      <label for="name">Nombre de la actividad:</label>
+      <input type="text" id="name" name="name" required>
+      <button type="submit">Buscar</button>
+    </form>
+
+    <!-- Lista de todas las actividades -->
+    <h2>Todas las actividades</h2>
     <ul>
       <% activities.forEach(activity=> { %>
         <li>
@@ -30,6 +44,7 @@
         </li>
         <% }); %>
     </ul>
+
     <!-- Botón para regresar a la vista principal -->
     <div class="back-to-home">
       <a href="/dashboard" class="button">Regresar a la página principal</a>

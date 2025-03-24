@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var activitiesController = require("../controllers/activities.c");
 var categoriesController = require("../controllers/categories.c");
+var activityLogsController = require("../controllers/activity_logs.c");
+const { authenticate } = require('../middleware/auth');
 
 /* POST registrar actividades */
 router.post('/', async (req, res) => {
@@ -32,12 +34,23 @@ router.post('/', async (req, res) => {
 });
 
 /* GET mostrar actividades. */
-router.get('/', async (req, res) => {
+router.get('/', authenticate, async (req, res) => {
   try {
     const activities = await activitiesController.show();
-    res.status(200).render('activities/activities', { activities });  // Renderiza la vista 'activities.ejs'
+    const lastActivities = await activityLogsController.getLastActivitiesByUser(req.user.id);
+
+    res.status(200).render('activities/activities', {
+      activities: activities,
+      lastActivities: lastActivities,
+      user: req.user
+    });
   } catch (err) {
-    res.status(500).send(`Error al listar actividades: ${err}`);
+    res.status(500).render('message', {
+      message: 'Error',
+      messageType: 'error',
+      details: `Error al obtener actividades: ${err.message}`,
+      redirectUrl: '/dashboard'
+    });
   }
 });
 
